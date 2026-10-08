@@ -20,7 +20,7 @@ over **~8 hours** (485 ÷ 8 ≈ 61 min/hour).
 |------------|-------------|-----------------|------------------|------|
 | H0 start | 00:14 | 485 (re-based; was 295) | 485 | Sprint start; scope correction applied at ~00:25, nothing implemented |
 | H1 | 01:14 | 424 | 300 | Behind ideal: 185 of 485 done (US-10, US-06, US-01, US-02, US-05); rebaselined scope is larger than the old 5 h plan by design |
-| H2 | 02:14 | 364 | _(fill)_ | |
+| H2 | 02:14 | 364 | 85 (recorded late 02:42 — H2 instant not observed; US-13 done in window) | |
 | H3 | 03:14 | 303 | _(fill)_ | |
 | H4 | 04:14 | 242 | _(fill)_ | |
 | H5 | 05:14 | 182 | _(fill)_ | Old 5 h mark: under old plan ideal would be 0; rebased plan expects ~182 left |

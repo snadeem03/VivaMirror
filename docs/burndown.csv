@@ -1,0 +1,27 @@
+elapsed_hours,actual_remaining_min,note
+0.000,295,sprint start (M0 plan: 295)
+0.170,295,scope: US-12 -> 40
+0.170,295,scope: US-13 -> 30
+0.170,295,scope: US-14 -> 25
+0.170,295,scope: US-17 -> 20
+0.170,295,scope: US-03 -> 40
+0.170,295,scope: US-04 -> 35
+0.170,295,scope: US-09 -> 30
+0.170,295,scope: US-11 -> 15
+0.170,295,scope: US-15 -> 0
+0.170,295,scope: US-16 -> 0
+0.170,485,correction M1 re-baseline: 485
+0.226,425,done: US-10
+0.521,365,done: US-06
+1.099,345,done: US-01
+1.099,320,done: US-02
+1.099,300,done: US-05
+1.099,300,hourly checkpoint
+1.462,265,done: US-04
+1.462,225,done: US-03
+1.707,190,done: US-08
+1.707,160,done: US-07
+1.707,130,done: US-09
+1.707,115,done: US-11
+2.467,85,done: US-13
+2.467,85,hourly checkpoint

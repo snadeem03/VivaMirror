@@ -38,6 +38,7 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | US-07 — Retry + compare | Done Milestone 5: same-question retry, pp deltas, newly/regressed, evidence inspection; issue #7 closed |
 | US-09 — Streamlit end-to-end flow | Done Milestone 5: full loop reachable, no login; issue #9 closed |
 | US-11 — Guardrails in code | Done Milestone 5: no-audio-retention verified, statements present, no login/tracking/paid API; issue #11 closed |
+| US-13 — GitHub Actions CI + archive | Done Milestone 6: CI green win+linux, v0.1.0 delivered + verified; issue #13 closed |
 
 ### Review (waiting / under review — not done)
 
@@ -49,15 +50,13 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 
 | Card | Note |
 |------|------|
-| US-13 — GitHub Actions CI + archive | Started Milestone 6 (~02:05 IST); CI then delivery workflows |
+| US-17 — Hourly burndown | Started Milestone 6 (~02:42 IST); chart generator + H2 checkpoint |
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 
 | Card | Estimate |
 |------|----------|
 | US-12 — Meaningful tests, CI-safe (bank+evaluator+flow+UI+store+history subtasks done, story open) | 40 min |
-| US-13 — GitHub Actions CI + archive | 30 min |
-| US-17 — Hourly burndown | 20 min |
 
 ### Backlog (deferred post-MVP)
 

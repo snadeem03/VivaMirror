@@ -1,0 +1,3 @@
+# VivaMirror report tooling (burndown chart only; not needed for CI).
+# Tested: matplotlib 3.11.2 on Python 3.11. Not a lockfile.
+matplotlib==3.11.2
