@@ -38,19 +38,18 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | Card | Note |
 |------|------|
 | US-14 — Tracking remainder | Waiting on sprint-end evidence (CI runs, final burndown); board/issues verified; stays open, see issue #14 |
+| US-09 — Streamlit flow (partial) | Waiting: typed flow done; spoken integration (US-03/US-04) + retry/compare (US-07/US-08) pending; not Done |
+| US-04 — Transcription adapter | In Review: adapter + 14 tests green, real base.en check passed; UI routing pending US-03 |
 
 ### In Progress (max 1)
 
-| Card | Note |
-|------|------|
-| US-09 — Streamlit flow (partial) | In Progress: select→answer→review→evaluate works; retry/compare pending US-07/US-08; not Done |
+*(empty — US-04 under review; US-03 starts next, sequentially)*
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 
 | Card | Estimate |
 |------|----------|
 | US-12 — Meaningful tests, CI-safe (bank+evaluator+flow+UI subtasks done, story open) | 40 min |
-| US-04 — Transcription adapter | 35 min |
 | US-03 — Record/upload audio | 40 min |
 | US-08 — SQLite history + progress | 35 min |
 | US-07 — Retry + compare | 30 min |

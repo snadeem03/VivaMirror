@@ -1,0 +1,7 @@
+# VivaMirror audio installation (US-03/US-04): local speech stack.
+# Tested on Python 3.11 (Windows, CPU): faster-whisper 1.2.1,
+# ctranslate2 4.8.2, av 18.1.0. Not a lockfile — no hashes claimed.
+# First run downloads the base.en model (~150 MB, internet required once);
+# afterwards transcription works offline from the local model cache.
+faster-whisper==1.2.1
+av==18.1.0
