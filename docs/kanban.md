@@ -47,7 +47,9 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 
 ### In Progress (max 1)
 
-*(empty — US-07 completed; Milestone 5 done, CI milestone next)*
+| Card | Note |
+|------|------|
+| US-13 — GitHub Actions CI + archive | Started Milestone 6 (~02:05 IST); CI then delivery workflows |
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 

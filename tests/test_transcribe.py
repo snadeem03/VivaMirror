@@ -91,7 +91,7 @@ def test_duration_is_measured_not_invented(tmp_path):
     assert result["duration_s"] == pytest.approx(3.0, abs=0.1)
 
 
-# --- Missing dependencies ---------------------------------------------------------------
+# --- Missing dependencies ---
 
 
 def test_backend_construction_loads_no_model_and_no_imports():
@@ -112,7 +112,7 @@ def test_missing_decoder_library_raise_actionable_error(monkeypatch, tmp_path):
         transcribe_audio(data, "answer.wav", transcriber=FakeTranscriber())
 
 
-# --- Validation before inference ------------------------------------------------------------
+# --- Validation before inference ---
 
 
 def test_oversized_audio_rejected_before_decoding(tmp_path):
@@ -181,7 +181,7 @@ def test_invalid_input_types_rejected():
         transcribe_audio(b"", "answer.wav", transcriber=FakeTranscriber())
 
 
-# --- Temp-file hygiene -------------------------------------------------------------------------
+# --- Temp-file hygiene ---
 
 
 def test_temp_file_uses_generated_name_not_upload_name(tmp_path, monkeypatch):

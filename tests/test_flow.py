@@ -147,7 +147,7 @@ def test_real_evaluator_integration_reports_coverage(bank):
     assert state["result"]["earned_weight"] == 65.0
 
 
-# --- Spoken-mode state (US-03/US-04 slice) ---------------------------------------------
+# --- Spoken-mode state (US-03/US-04 slice) ---
 
 
 def _audio(n=10):
@@ -227,7 +227,7 @@ def test_retry_clears_audio(bank):
     assert state["answer_source"] == ""
 
 
-# --- Explicit save and assistance (US-07/US-08 slice) ---------------------------------------
+# --- Explicit save and assistance (US-07/US-08 slice) ---
 
 
 def _evaluated(bank, qid="ds-15", text="Network splits will eventually happen."):

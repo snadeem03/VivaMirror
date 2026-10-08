@@ -229,7 +229,10 @@ def transcribe_audio(
                 f"{MAX_DURATION_S:.0f}s limit; record a shorter answer or "
                 f"type it instead"
             )
-        backend = transcriber if transcriber is not None else FasterWhisperBackend(model)
+        if transcriber is None:
+            backend = FasterWhisperBackend(model)
+        else:
+            backend = transcriber
         backend_name = getattr(backend, "name", type(backend).__name__)
         model_name = getattr(backend, "model_name", model)
         try:

@@ -6,7 +6,6 @@ written to temporary directories; the real curated bank is only ever read.
 
 import copy
 import json
-import sys
 
 import pytest
 
@@ -155,7 +154,9 @@ def test_single_word_accepted_phrase_rejected():
 # --- Invalid weights ------------------------------------------------------------
 
 
-@pytest.mark.parametrize("bad", [0, -5, True, False, "25", None, float("nan"), float("inf")])
+@pytest.mark.parametrize(
+    "bad", [0, -5, True, False, "25", None, float("nan"), float("inf")]
+)
 def test_invalid_weights_rejected(bad):
     data = _bank()
     data[0]["concepts"][0]["weight"] = bad

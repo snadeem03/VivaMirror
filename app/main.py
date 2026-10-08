@@ -159,7 +159,10 @@ def _render_history(bank: list[dict]) -> None:
     label_a = st.selectbox("Earlier attempt", options, index=default_a, key="cmp_a")
     label_b = st.selectbox("Later attempt", options, index=default_b, key="cmp_b")
     if st.button("Compare", key="compare_btn"):
-        st.session_state["compare_pair"] = (by_label[label_a]["id"], by_label[label_b]["id"])
+        st.session_state["compare_pair"] = (
+            by_label[label_a]["id"],
+            by_label[label_b]["id"],
+        )
     pair = st.session_state.get("compare_pair")
     if pair is not None:
         first = next((a for a in mine if a["id"] == pair[0]), None)
@@ -404,7 +407,8 @@ def main() -> None:
             "Play it back, then press **Transcribe** — transcription only "
             "ever runs when you press that button."
         )
-        if st.session_state.get("vm_transcriber") is None and not speech_stack_available():
+        custom_transcriber = st.session_state.get("vm_transcriber") is not None
+        if not custom_transcriber and not speech_stack_available():
             st.warning(
                 "Audio support is not installed in this environment "
                 "(faster-whisper missing). You can still record or upload, "

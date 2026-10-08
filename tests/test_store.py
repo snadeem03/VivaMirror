@@ -54,7 +54,7 @@ def _record(question, reviewed, created_at, attempt_id,
     }
 
 
-# --- Initialization -------------------------------------------------------------------------------
+# --- Initialization ---
 
 
 def test_init_is_idempotent_and_records_schema_version(tmp_path):
@@ -101,7 +101,7 @@ def test_default_path_is_ignored_local_runtime_data(monkeypatch, tmp_path):
     assert resolve_db_path(None) == default_db_path()
 
 
-# --- Round-trips -------------------------------------------------------------------------------------
+# --- Round-trips ---
 
 
 def test_round_trip_preserves_full_attempt(question, tmp_path):
@@ -184,7 +184,7 @@ def test_get_missing_attempt_returns_none(tmp_path):
     assert get_attempt(tmp_path / "history.db", "nope") is None
 
 
-# --- Deletion --------------------------------------------------------------------------------------------
+# --- Deletion ---
 
 
 def test_delete_one_attempt(question, tmp_path):
@@ -209,7 +209,7 @@ def test_delete_all_attempts(question, tmp_path):
     assert delete_all_attempts(db) == 0
 
 
-# --- Privacy: never audio -------------------------------------------------------------------------------
+# --- Privacy: never audio ---
 
 
 def test_raw_audio_is_refused_not_stored(question, tmp_path):
@@ -232,7 +232,7 @@ def test_stored_payload_contains_no_audio_keys(question, tmp_path):
     assert "audio" not in blob
 
 
-# --- Corrupt data ---------------------------------------------------------------------------------------------
+# --- Corrupt data ---
 
 
 def test_corrupt_stored_json_raises_identifying_error(question, tmp_path):
@@ -254,7 +254,7 @@ def test_corrupt_stored_json_raises_identifying_error(question, tmp_path):
     assert db.exists()
 
 
-# --- Comparison ---------------------------------------------------------------------------------------------------
+# --- Comparison ---
 
 
 def _two_attempts(question):

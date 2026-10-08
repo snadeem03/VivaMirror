@@ -73,7 +73,7 @@ def _headers(at):
     return [h.value for h in at.header]
 
 
-# --- Save and history ----------------------------------------------------------------------------------
+# --- Save and history ---
 
 
 def test_empty_history_state(db):
@@ -126,7 +126,7 @@ def test_retry_new_evaluation_saves_separate_row(db):
     assert any("latest 100.0%" in m.value for m in at.markdown)
 
 
-# --- Comparison -----------------------------------------------------------------------------------------------
+# --- Comparison ---
 
 
 def _save_two_attempts(at):
@@ -168,7 +168,7 @@ def test_weaker_later_attempt_reports_negative_delta_and_regression(db):
     assert any("CP versus AP behaviour" in m.value for m in at.markdown)
 
 
-# --- Assistance ------------------------------------------------------------------------------------------------------
+# --- Assistance ---
 
 
 def test_reveal_marks_save_assisted_and_retry_keeps_it(db):
@@ -195,7 +195,7 @@ def test_unassisted_save_labeled_honestly(db):
     assert any("unassisted" in m.value for m in at.markdown)
 
 
-# --- Deletion -----------------------------------------------------------------------------------------------------------
+# --- Deletion ---
 
 
 def test_delete_one_attempt(db):
@@ -222,7 +222,7 @@ def test_delete_all_requires_explicit_confirmation(db):
     assert any("No saved attempts yet" in i.value for i in at.info)
 
 
-# --- Failure and isolation ---------------------------------------------------------------------------------------------------
+# --- Failure and isolation ---
 
 
 def test_failed_save_keeps_reviewed_answer(monkeypatch, tmp_path):

@@ -1,0 +1,58 @@
+# VivaMirror CI on pushes and pull requests.
+#
+# What runs here (and only this):
+# - Python 3.11 on Windows + Linux, core/dev dependencies only
+#   (streamlit/pytest/ruff) — no speech models, no downloads, no secrets.
+# - Ruff lint (pyproject.toml) and the full offline/model-free pytest suite.
+# - JUnit test report uploaded as an artifact, including on failure.
+#
+# What CI does NOT verify: real microphone recording and real speech-model
+# inference (both need hardware/network a runner cannot provide). Those are
+# covered by documented manual checks plus clearly labeled test doubles.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: lint and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install core and dev dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Lint (ruff)
+        run: python -m ruff check app tests
+
+      - name: Test (pytest, offline and model-free)
+        run: >
+          python -m pytest tests/ -q
+          --junitxml=test-results/results.xml
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: test-results/results.xml

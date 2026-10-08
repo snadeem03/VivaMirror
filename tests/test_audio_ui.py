@@ -97,7 +97,7 @@ def _transcribe(at):
     return at
 
 
-# --- Typed independence ----------------------------------------------------------------------
+# --- Typed independence ---
 
 
 def test_typed_flow_works_when_speech_stack_is_absent(monkeypatch):
@@ -130,7 +130,7 @@ def test_read_upload_normalizes_mic_and_upload_shapes():
     }
 
 
-# --- Spoken flow ---------------------------------------------------------------------------------
+# --- Spoken flow ---
 
 
 def test_successful_transcription_enters_review_not_evaluation():

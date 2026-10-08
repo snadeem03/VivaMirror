@@ -1,0 +1,7 @@
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+# Genuine checks only: pycodestyle errors and pyflakes. No blanket ignores;
+# every violation is fixed, not silenced.
+select = ["E", "F"]

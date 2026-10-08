@@ -7,7 +7,6 @@ synthetic fixtures are used only where the bank has no suitable phrase
 to make tests pass.
 """
 
-import subprocess
 import sys
 from pathlib import Path
 
