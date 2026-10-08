@@ -17,7 +17,7 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 - **Maximum 1 implementation story in In Progress at any time** (single developer).
 - Planning/process cards do not count against the WIP limit.
 
-## Board (real status as of correction M1 — no implementation started)
+## Board (real status as of Milestone 2 — US-06 done, US-14 waiting)
 
 ### Done
 
@@ -26,22 +26,24 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | M0 — Project init + Agile planning | Committed `f7ec919`; satisfies US-14 planning portion |
 | Correction M1 — Prioritize Agile/CI deliverables | Committed `764a04e`; scope re-baselined to 485 min, US-17 added |
 | US-10 — Curated 15-Q bank | Done Milestone 1: 15 Qs / 60 concepts in `data/questions.json`, loader + validation, 30 pytest green |
+| Rubric fix — Clarify CAP definitions | Committed `a1a7b61`; ds-15 corrected, other 14 inspected, bank re-validated |
+| US-06 — Rubric evaluation + evidence, negation-safe | Done Milestone 2: `app/evaluation.py` + 35 tests, full suite 65/65; issue #6 closed |
 
-### Review
+### Review (waiting / under review — not done)
 
-*(empty — US-10 passed review: 30/30 tests, acceptance criteria verified)*
+| Card | Note |
+|------|------|
+| US-14 — Tracking remainder | Waiting on sprint-end evidence (CI runs, final burndown); board/issues verified; stays open, see issue #14 |
 
 ### In Progress (max 1)
 
-*(empty — US-10 completed; next story starts in the next milestone)*
+*(empty — US-06 completed; next story starts in the next milestone)*
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 
 | Card | Estimate |
 |------|----------|
-| US-10 — Curated 15-Q bank | 60 min |
-| US-06 — Rubric evaluation + evidence, negation-safe | 60 min |
-| US-12 — Meaningful tests, CI-safe | 40 min |
+| US-12 — Meaningful tests, CI-safe (evaluator subtask done, story open) | 40 min |
 | US-01 — Question select | 20 min |
 | US-02 — Typed-answer mode | 25 min |
 | US-05 — Review/edit before evaluation | 20 min |
@@ -52,7 +54,6 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | US-09 — Streamlit flow (trimmed) | 30 min |
 | US-11 — Guardrails in code | 15 min |
 | US-13 — GitHub Actions CI + archive | 30 min |
-| US-14 — Tracking remainder (Issues + board) | 25 min |
 | US-17 — Hourly burndown | 20 min |
 
 ### Backlog (deferred post-MVP)
