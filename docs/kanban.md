@@ -20,15 +20,16 @@ Remote board URL: _(pending — fill in after verified creation)_
 | Card | Note |
 |------|------|
 | M0 — Project init + Agile planning | Committed `f7ec919`; satisfies US-14 planning portion |
-| Correction M1 — Prioritize Agile/CI deliverables | Re-planned scope (485 min), US-17 added, burndown plan; local commit (hash below) |
+| Correction M1 — Prioritize Agile/CI deliverables | Committed `764a04e`; scope re-baselined to 485 min, US-17 added |
+| US-10 — Curated 15-Q bank | Done Milestone 1: 15 Qs / 60 concepts in `data/questions.json`, loader + validation, 30 pytest green |
 
 ### Review
 
-*(empty)*
+*(empty — US-10 passed review: 30/30 tests, acceptance criteria verified)*
 
-### In Progress
+### In Progress (max 1)
 
-*(empty — 0 implementation stories in progress; US-10 starts here in Milestone 1)*
+*(empty — US-10 completed; next story starts in the next milestone)*
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 

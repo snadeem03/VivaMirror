@@ -1,0 +1,1067 @@
+[
+  {
+    "difficulty": "foundational",
+    "follow_up": "Why does the lack of shared memory change how the nodes must communicate?",
+    "id": "ds-01",
+    "question_text": "What is a distributed system, and what are its key characteristics?",
+    "reference_answer": "A distributed system is a collection of autonomous computing nodes connected by a network that appears to its users as a single coherent system. Its nodes have no shared memory or global clock, execute concurrently, communicate by message passing, and can fail independently, so the system must cope with partial failure.",
+    "subject": "Distributed Systems",
+    "topic": "Definition and characteristics",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "collection of autonomous nodes",
+          "appears as a single coherent system",
+          "single system image across machines"
+        ],
+        "explanation": "Many independent machines cooperate yet present one unified system to the user.",
+        "id": "ds-01-c1",
+        "label": "Autonomous nodes, single-system image",
+        "negative_examples": [
+          "A distributed system is just one big computer with many cores.",
+          "The nodes are not independent because they share one CPU."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "communicate by message passing",
+          "no shared memory between nodes",
+          "exchange messages over the network"
+        ],
+        "explanation": "Without shared memory, coordination happens through messages sent over the network.",
+        "id": "ds-01-c2",
+        "label": "Message passing, no shared memory",
+        "negative_examples": [
+          "Nodes coordinate through shared memory variables.",
+          "No communication is needed because memory is shared."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "nodes execute concurrently",
+          "concurrent execution on multiple nodes",
+          "activities overlap in real time"
+        ],
+        "explanation": "Work proceeds in parallel on different nodes, so events can overlap in real time.",
+        "id": "ds-01-c3",
+        "label": "Concurrency across nodes",
+        "negative_examples": [
+          "All nodes execute in strict lockstep one after another.",
+          "Nothing ever happens at the same time."
+        ],
+        "weight": 20
+      },
+      {
+        "accepted_phrases": [
+          "nodes can fail independently",
+          "partial failure of some components",
+          "no global clock across nodes"
+        ],
+        "explanation": "Some nodes may crash while others continue, and there is no perfectly synchronised clock.",
+        "id": "ds-01-c4",
+        "label": "Partial failure and no global clock",
+        "negative_examples": [
+          "Either the whole system is up or everything is down.",
+          "All nodes share one exact global clock."
+        ],
+        "weight": 25
+      }
+    ]
+  },
+  {
+    "difficulty": "foundational",
+    "follow_up": "Give one workload where a centralized design wins and one where a distributed design wins, and say why.",
+    "id": "ds-02",
+    "question_text": "Compare distributed systems with centralized systems. What are the main differences and trade-offs?",
+    "reference_answer": "A centralized system concentrates control, data, and decisions in one place, which is simpler to build, reason about, and keep consistent. A distributed system spreads them across nodes, gaining scalability and fault tolerance but paying with network complexity, harder consistency, and partial-failure handling.",
+    "subject": "Distributed Systems",
+    "topic": "Distributed versus centralized systems",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "control concentrated in one place",
+          "single point of control and data",
+          "decisions made by one central node"
+        ],
+        "explanation": "Centralized designs keep authority and state in one location.",
+        "id": "ds-02-c1",
+        "label": "Centralized control and state",
+        "negative_examples": [
+          "A centralized system has no single authority anywhere.",
+          "Centralized means control is spread across nodes."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "spread across multiple nodes",
+          "workload shared by many machines",
+          "scales by adding more nodes"
+        ],
+        "explanation": "Distributed designs divide work and data across nodes and grow by adding machines.",
+        "id": "ds-02-c2",
+        "label": "Distribution of work and data",
+        "negative_examples": [
+          "A distributed system cannot add machines to grow.",
+          "Everything runs on a single machine."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "single point of failure risk",
+          "one failure can stop everything",
+          "survives individual node crashes"
+        ],
+        "explanation": "Centralized systems risk total outage from one failure; distributed systems can survive single-node crashes.",
+        "id": "ds-02-c3",
+        "label": "Failure impact differs",
+        "negative_examples": [
+          "Centralized systems survive any single failure.",
+          "Distributed systems always fail completely together."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "pays with extra complexity",
+          "harder to keep data consistent",
+          "network communication adds overhead"
+        ],
+        "explanation": "Distribution buys scale and resilience at the cost of complexity, consistency effort, and network overhead.",
+        "id": "ds-02-c4",
+        "label": "Complexity and consistency cost",
+        "negative_examples": [
+          "Distribution adds no complexity at all.",
+          "Consistency becomes trivial with more nodes."
+        ],
+        "weight": 25
+      }
+    ]
+  },
+  {
+    "difficulty": "intermediate",
+    "follow_up": "Why can too much failure transparency mislead application developers?",
+    "id": "ds-03",
+    "question_text": "What is transparency in distributed systems? Name its important forms and discuss their purpose.",
+    "reference_answer": "Transparency hides distribution aspects — where resources are, whether they move or replicate, concurrent access, and partial failures — so the system looks like one coherent machine. Forms include access, location, migration, replication, concurrency, and failure transparency; perfect transparency is impossible, since hiding failures or latency can mislead developers and cost performance.",
+    "subject": "Distributed Systems",
+    "topic": "Transparency",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "hides how resources are accessed",
+          "same operations for local and remote",
+          "uniform access to resources"
+        ],
+        "explanation": "Access transparency lets users reach resources the same way regardless of how they are represented.",
+        "id": "ds-03-c1",
+        "label": "Access transparency",
+        "negative_examples": [
+          "Users must learn different operations per machine.",
+          "Access transparency exposes every hardware detail."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "hides where a resource lives",
+          "resources reachable without knowing their location",
+          "location-independent naming of resources"
+        ],
+        "explanation": "Location transparency means names do not reveal, and use does not require knowing, physical placement.",
+        "id": "ds-03-c2",
+        "label": "Location and migration transparency",
+        "negative_examples": [
+          "Every user must hardcode the server address.",
+          "Moving a resource must break all its users."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "hides the existence of replicas",
+          "masks concurrent access by users",
+          "hides failures from the user"
+        ],
+        "explanation": "Replication, concurrency, and failure transparency hide copies, sharing, and partial outages.",
+        "id": "ds-03-c3",
+        "label": "Replication, concurrency, failure transparency",
+        "negative_examples": [
+          "Users must manually pick which replica to read.",
+          "Every crash is always visible to end users."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "perfect transparency is impossible",
+          "hiding latency can mislead developers",
+          "transparency trades against performance"
+        ],
+        "explanation": "Full hiding is unattainable — latency and failures leak through — and hiding them can hurt performance and debugging.",
+        "id": "ds-03-c4",
+        "label": "Limits and costs of transparency",
+        "negative_examples": [
+          "Complete transparency is always achievable.",
+          "Hiding distribution never has any downside."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "intermediate",
+    "follow_up": "Your service slows down every evening at peak load but the servers are idle on average. Which scalability dimension and bottleneck would you investigate first?",
+    "id": "ds-04",
+    "question_text": "What is scalability in distributed systems? Discuss its dimensions and how systems achieve it.",
+    "reference_answer": "Scalability is the ability to keep performance acceptable as size, geography, or administrative spread grows. Systems scale up by strengthening one machine or scale out by adding machines, and they remove bottlenecks — centralized services, tables, or algorithms — using partitioning, replication, caching, and asynchronous communication.",
+    "subject": "Distributed Systems",
+    "topic": "Scalability",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "grows in number of users",
+          "covers larger geographic spread",
+          "spans multiple administrative domains"
+        ],
+        "explanation": "Scalability covers size (users, data), geography (distance/latency), and administration (independent organisations).",
+        "id": "ds-04-c1",
+        "label": "Size, geographical, administrative dimensions",
+        "negative_examples": [
+          "Scalability only means buying a faster CPU.",
+          "Distance and latency never affect scalability."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "stronger single machine versus more machines",
+          "vertical scaling of one server",
+          "horizontal scaling by adding nodes"
+        ],
+        "explanation": "Scale up (vertical) strengthens one machine; scale out (horizontal) adds more machines.",
+        "id": "ds-04-c2",
+        "label": "Scale up versus scale out",
+        "negative_examples": [
+          "Scaling out means replacing the server with a bigger one.",
+          "You cannot scale by adding more machines."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "single component limits the whole system",
+          "centralized service becomes a bottleneck",
+          "hot spot under growing load"
+        ],
+        "explanation": "Centralized services, data, or algorithms bottleneck growth when everything depends on them.",
+        "id": "ds-04-c3",
+        "label": "Centralized bottlenecks",
+        "negative_examples": [
+          "Centralized components never limit growth.",
+          "Bottlenecks disappear automatically at scale."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "split data across partitions",
+          "cache frequently used results",
+          "decouple work with asynchronous messaging"
+        ],
+        "explanation": "Partitioning, replication, caching, and async communication spread load and hide latency.",
+        "id": "ds-04-c4",
+        "label": "Techniques: partitioning, caching, async",
+        "negative_examples": [
+          "Partitioning concentrates all load on one node.",
+          "Synchronous blocking calls are the way to scale."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "foundational",
+    "follow_up": "In a file-sharing application with millions of users and no central server budget, which architecture fits better and why?",
+    "id": "ds-05",
+    "question_text": "Compare client-server and peer-to-peer architectures. When would you choose each?",
+    "reference_answer": "Client-server fixes roles: servers hold resources and clients request them, which simplifies management and security but risks overload and a single point of failure. Peer-to-peer makes every node both client and server, sharing load and surviving churn, at the cost of harder lookup, trust, and consistency — a good fit for large-scale sharing like file distribution.",
+    "subject": "Distributed Systems",
+    "topic": "Client-server versus peer-to-peer",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "servers provide resources to clients",
+          "fixed roles of requester and provider",
+          "clients send requests to servers"
+        ],
+        "explanation": "Client-server assigns fixed roles: servers serve, clients consume.",
+        "id": "ds-05-c1",
+        "label": "Fixed client and server roles",
+        "negative_examples": [
+          "In client-server every node has identical duties.",
+          "Servers request services from clients."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "every node acts as both",
+          "peers share load among themselves",
+          "no central server required"
+        ],
+        "explanation": "In peer-to-peer, each node is simultaneously client and server, spreading load without a centre.",
+        "id": "ds-05-c2",
+        "label": "Symmetric peers, shared load",
+        "negative_examples": [
+          "Peer-to-peer depends on one central server.",
+          "Peers never serve anything to each other."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "server overload under many clients",
+          "central server is a single point of failure",
+          "tolerates nodes joining and leaving"
+        ],
+        "explanation": "Client-server risks overload and single-point failure; P2P absorbs growth and churn better.",
+        "id": "ds-05-c3",
+        "label": "Overload, failure, and churn behaviour",
+        "negative_examples": [
+          "Client-server has no single point of failure.",
+          "Peer-to-peer collapses whenever one node leaves."
+        ],
+        "weight": 20
+      },
+      {
+        "accepted_phrases": [
+          "overlay routing to find data",
+          "distributed hash table for lookups",
+          "simpler to secure and manage centrally"
+        ],
+        "explanation": "P2P needs overlay lookup such as DHTs; client-server is easier to manage and secure centrally.",
+        "id": "ds-05-c4",
+        "label": "Lookup, management, security trade-off",
+        "negative_examples": [
+          "Peer-to-peer needs no lookup mechanism at all.",
+          "Trust and security are trivial without any server."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "intermediate",
+    "follow_up": "A payment operation must never run twice even if requests are retried. Which call semantics do you need, and how would you implement it?",
+    "id": "ds-06",
+    "question_text": "What is a Remote Procedure Call (RPC)? Explain how it works and how it differs from a local call.",
+    "reference_answer": "RPC lets a program call a procedure on another machine as if it were local. Stubs marshal parameters into messages, the server skeleton unmarshals and executes, and results return the same way. Unlike local calls, RPCs cross failure boundaries — requests can be lost or duplicated — so systems choose at-least-once, at-most-once, or effectively exactly-once semantics, and must handle partial failure and latency explicitly.",
+    "subject": "Distributed Systems",
+    "topic": "RPC",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "call a procedure on another machine",
+          "invokes remote code like a local call",
+          "hides networking behind a call interface"
+        ],
+        "explanation": "RPC presents remote execution through an ordinary procedure-call interface.",
+        "id": "ds-06-c1",
+        "label": "Remote call, local-style interface",
+        "negative_examples": [
+          "RPC executes only inside the same process.",
+          "Remote procedure calls involve no network at all."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "stubs marshal the parameters",
+          "skeleton unmarshals the request",
+          "parameters packed into network messages"
+        ],
+        "explanation": "Client stubs pack parameters into messages; server skeletons unpack them and dispatch to the real procedure.",
+        "id": "ds-06-c2",
+        "label": "Stubs, skeletons, marshalling",
+        "negative_examples": [
+          "Parameters travel without any packing or conversion.",
+          "Stubs execute the business logic themselves."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "retried requests may execute twice",
+          "at-least-once versus at-most-once semantics",
+          "exactly-once requires deduplication and idempotence"
+        ],
+        "explanation": "Lost or duplicated messages force a choice: at-least-once (possible repeats), at-most-once (possible loss), or exactly-once effects via idempotence and dedup.",
+        "id": "ds-06-c3",
+        "label": "Call semantics under failure",
+        "negative_examples": [
+          "Retries can never cause duplicate execution.",
+          "Exactly-once happens automatically with no extra work."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "caller and callee can fail separately",
+          "partial failure is possible",
+          "network latency dominates call cost"
+        ],
+        "explanation": "Unlike local calls, either side or the network can fail independently, and latency is orders of magnitude higher.",
+        "id": "ds-06-c4",
+        "label": "Partial failure and latency",
+        "negative_examples": [
+          "Remote calls fail only together with the caller.",
+          "Remote calls are as fast as local calls."
+        ],
+        "weight": 15
+      }
+    ]
+  },
+  {
+    "difficulty": "advanced",
+    "follow_up": "You add a 5-second timeout to detect crashed servers. In which model is that timeout reliable, and why can it be wrong in the other?",
+    "id": "ds-07",
+    "question_text": "Distinguish synchronous and asynchronous distributed systems. Why does the distinction matter?",
+    "reference_answer": "A synchronous system assumes known bounds on processing speeds, message delays, and clock drift, so timeouts reliably detect failure. An asynchronous system assumes no such bounds, so a slow process is indistinguishable from a crashed one — which is why deterministic consensus is impossible there with even one faulty process (the FLP result). The distinction decides whether timeouts are trustworthy or merely heuristics.",
+    "subject": "Distributed Systems",
+    "topic": "Synchronous versus asynchronous systems",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "known bounds on message delays",
+          "bounded processing and clock drift",
+          "assumes timing guarantees hold"
+        ],
+        "explanation": "Synchronous models assume upper bounds on compute time, delivery time, and clock drift.",
+        "id": "ds-07-c1",
+        "label": "Synchronous timing bounds",
+        "negative_examples": [
+          "Synchronous systems assume nothing about timing.",
+          "Bounds on delays are irrelevant to the model."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "no bounds on timing assumed",
+          "arbitrary delays are possible",
+          "slow and crashed look identical"
+        ],
+        "explanation": "Asynchronous models assume no timing bounds, so delay and crash cannot be told apart.",
+        "id": "ds-07-c2",
+        "label": "Asynchronous: no timing bounds",
+        "negative_examples": [
+          "Asynchronous systems guarantee maximum delivery times.",
+          "A slow process is always distinguishable from a dead one."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "timeouts reliably detect failures",
+          "expiry of a bound means a crash",
+          "failure detection through timeouts"
+        ],
+        "explanation": "With real bounds, an expired timeout proves something failed; that is how sync systems detect crashes.",
+        "id": "ds-07-c3",
+        "label": "Timeouts trustworthy only with bounds",
+        "negative_examples": [
+          "Timeouts always prove a crash in every model.",
+          "Failure detectors need no timing assumptions."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "deterministic consensus is impossible asynchronously",
+          "FLP impossibility with one faulty process",
+          "timeouts are only heuristics without bounds"
+        ],
+        "explanation": "Without bounds, agreement needs randomness or partial synchrony — deterministic async consensus with faults is impossible.",
+        "id": "ds-07-c4",
+        "label": "FLP consequence for agreement",
+        "negative_examples": [
+          "Async consensus is always solvable deterministically.",
+          "The FLP result applies only to synchronous systems."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "advanced",
+    "follow_up": "Two events carry timestamps 5 and 9. Can you conclude the first caused the second? What extra information would settle it?",
+    "id": "ds-08",
+    "question_text": "What are logical clocks and Lamport timestamps? What ordering guarantee do they give, and what do they not prove?",
+    "reference_answer": "Logical clocks order events without physical time. Each process counts up, stamps sent messages, and on receipt jumps ahead of the sender's stamp — so if event a causally precedes b, then C(a) < C(b). The converse is false: a smaller timestamp does not prove causation, since concurrent events are ordered arbitrarily (ties broken by process ID give a total order consistent with, but not proving, causality).",
+    "subject": "Distributed Systems",
+    "topic": "Logical clocks and Lamport clocks",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "order events without physical time",
+          "happens-before relation between events",
+          "causal precedence of events"
+        ],
+        "explanation": "Logical clocks capture the happens-before (causal precedence) relation instead of wall-clock time.",
+        "id": "ds-08-c1",
+        "label": "Happens-before relation",
+        "negative_examples": [
+          "Lamport clocks measure real physical time.",
+          "Happens-before means occurring at the same instant."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "jump ahead of the sender timestamp",
+          "take the maximum plus one",
+          "stamp outgoing messages with the counter"
+        ],
+        "explanation": "Processes increment per event, stamp messages, and receivers advance past the received stamp.",
+        "id": "ds-08-c2",
+        "label": "Counter update and message rule",
+        "negative_examples": [
+          "Receivers ignore timestamps on incoming messages.",
+          "Clocks are never updated when messages arrive."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "causality implies timestamp order",
+          "if a precedes b then timestamp grows",
+          "timestamps respect causal order"
+        ],
+        "explanation": "The guarantee is one-directional: a → b implies C(a) < C(b).",
+        "id": "ds-08-c3",
+        "label": "Causality implies timestamp order",
+        "negative_examples": [
+          "Causally related events may carry decreasing timestamps.",
+          "The clock rule breaks causal ordering."
+        ],
+        "weight": 20
+      },
+      {
+        "accepted_phrases": [
+          "smaller timestamp does not prove causation",
+          "concurrent events ordered arbitrarily",
+          "timestamp order alone proves nothing"
+        ],
+        "explanation": "The converse fails: C(a) < C(b) does not mean a caused b, since concurrent events get arbitrary relative order.",
+        "id": "ds-08-c4",
+        "label": "Converse is false",
+        "negative_examples": [
+          "A smaller timestamp always proves the event caused the other.",
+          "Timestamp comparison alone establishes causality."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "intermediate",
+    "follow_up": "Your token-ring mutual exclusion loses the token on a crash. What breaks, and how would you recover?",
+    "id": "ds-09",
+    "question_text": "What is the distributed mutual exclusion problem? Explain the requirements and main solution approaches.",
+    "reference_answer": "Mutual exclusion grants at most one process access to a shared resource at a time (safety), while guaranteeing every requester eventually enters and no one starves (liveness). Approaches are centralized (a coordinator hands out permission), permission-based voting such as Ricart–Agrawala with logical timestamps, and token-based schemes where holding a circulating token confers entry — trading message cost, fault tolerance, and fairness differently.",
+    "subject": "Distributed Systems",
+    "topic": "Mutual exclusion",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "at most one process inside",
+          "exclusive access to the shared resource",
+          "no two processes enter together"
+        ],
+        "explanation": "Safety: at most one process may hold the critical section at any moment.",
+        "id": "ds-09-c1",
+        "label": "Safety: exclusive entry",
+        "negative_examples": [
+          "Several processes may hold the critical section together.",
+          "Exclusion means everyone enters at once."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "every requester eventually enters",
+          "no process starves forever",
+          "progress without deadlock"
+        ],
+        "explanation": "Liveness: requests are eventually granted, with no deadlock and no starvation.",
+        "id": "ds-09-c2",
+        "label": "Liveness: no deadlock or starvation",
+        "negative_examples": [
+          "Requesters may wait forever and that is fine.",
+          "Deadlock among requesters satisfies liveness."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "coordinator grants entry permission",
+          "collect permission from all peers",
+          "holding the token confers entry"
+        ],
+        "explanation": "Centralized coordinators, permission voting (e.g. Ricart–Agrawala), and circulating tokens are the three families.",
+        "id": "ds-09-c3",
+        "label": "Centralized, permission, token approaches",
+        "negative_examples": [
+          "There is only one possible algorithm design.",
+          "Token schemes need permission from a coordinator."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "message cost per entry",
+          "coordinator is a single point of failure",
+          "fair ordering of waiting requests"
+        ],
+        "explanation": "Designs differ in messages per entry, crash resilience (coordinator/token loss), and fairness of request ordering.",
+        "id": "ds-09-c4",
+        "label": "Cost, fault tolerance, fairness trade-offs",
+        "negative_examples": [
+          "All approaches cost the same and never fail.",
+          "Fairness and fault tolerance need no consideration."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "intermediate",
+    "follow_up": "Two replicas accept conflicting writes during a network split. What must happen when the split heals, and which consistency level decides the outcome?",
+    "id": "ds-10",
+    "question_text": "What is replication in distributed systems? Why replicate, and what problems does it introduce?",
+    "reference_answer": "Replication keeps copies of data on multiple nodes to improve availability, fault tolerance, and read performance or locality. It introduces the replica-consistency problem: updates must propagate (eagerly or lazily, push or pull), concurrent writes can conflict, and stronger consistency costs latency and availability — so designers pick a propagation and consistency strategy per workload.",
+    "subject": "Distributed Systems",
+    "topic": "Replication",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "copies on multiple nodes",
+          "survives server failures",
+          "reads served from nearby replicas"
+        ],
+        "explanation": "Copies across nodes keep data reachable during failures and close to readers.",
+        "id": "ds-10-c1",
+        "label": "Copies for availability and locality",
+        "negative_examples": [
+          "Replication stores data on fewer machines.",
+          "Replicas make data harder to reach."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "updates must reach all replicas",
+          "propagate writes eagerly or lazily",
+          "push updates versus pull on demand"
+        ],
+        "explanation": "Writes propagate to replicas synchronously (eager) or in the background (lazy), pushed or pulled.",
+        "id": "ds-10-c2",
+        "label": "Update propagation strategies",
+        "negative_examples": [
+          "Replicas update themselves with no propagation.",
+          "Writes never need to leave the primary."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "concurrent writes can conflict",
+          "replicas may diverge temporarily",
+          "conflicts need a resolution policy"
+        ],
+        "explanation": "Concurrent updates to different replicas diverge and need detection plus a resolution policy.",
+        "id": "ds-10-c3",
+        "label": "Divergence and write conflicts",
+        "negative_examples": [
+          "Concurrent writes can never conflict.",
+          "Replicas always agree without any mechanism."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "stronger consistency costs latency",
+          "extra storage and message overhead",
+          "consistency level chosen per workload"
+        ],
+        "explanation": "Replication costs storage, messages, and — for strong consistency — latency and availability.",
+        "id": "ds-10-c4",
+        "label": "Costs and per-workload choice",
+        "negative_examples": [
+          "Replication is free with no overhead.",
+          "One consistency level suits every workload."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "advanced",
+    "follow_up": "A social feed shows your own post immediately but a friend's older post appears later. Which client-centric guarantee explains your expectation, and which model permits the delay?",
+    "id": "ds-11",
+    "question_text": "Explain the main consistency models for replicated data: linearizability, sequential, causal, and eventual consistency.",
+    "reference_answer": "Linearizability makes operations appear instant at some point between invocation and response (strongest, costliest). Sequential consistency keeps one global order respecting each process's program order but without real-time bounds. Causal consistency orders only causally related writes, letting concurrent writes appear differently. Eventual consistency promises replicas converge when updates stop, so reads may be stale — softened by client-centric guarantees like read-your-writes and monotonic reads.",
+    "subject": "Distributed Systems",
+    "topic": "Consistency models",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "operations appear instantly between call and return",
+          "real-time order is preserved",
+          "strongest single-copy illusion"
+        ],
+        "explanation": "Linearizability: each operation seems to take effect instantaneously within its real-time interval.",
+        "id": "ds-11-c1",
+        "label": "Linearizability (strong)",
+        "negative_examples": [
+          "Linearizability allows stale reads after a write completes.",
+          "Real-time ordering is irrelevant to linearizability."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "single global order of operations",
+          "respects each process program order",
+          "without real-time guarantees"
+        ],
+        "explanation": "Sequential consistency: all processes agree on one order that respects every program order, minus real-time constraints.",
+        "id": "ds-11-c2",
+        "label": "Sequential consistency",
+        "negative_examples": [
+          "Sequential consistency preserves real-time order.",
+          "Processes may disagree on the global order."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "only causally related writes ordered",
+          "concurrent writes may appear differently",
+          "cause and effect stay ordered"
+        ],
+        "explanation": "Causal consistency orders writes linked by causality; concurrent writes may be seen in different orders.",
+        "id": "ds-11-c3",
+        "label": "Causal consistency",
+        "negative_examples": [
+          "Causal consistency orders all writes identically.",
+          "Causes may appear after their effects."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "replicas converge when updates stop",
+          "reads may return stale values",
+          "monotonic reads and read-your-writes"
+        ],
+        "explanation": "Eventual consistency guarantees convergence only once updates cease; client-centric guarantees bound the staleness one client sees.",
+        "id": "ds-11-c4",
+        "label": "Eventual + client-centric guarantees",
+        "negative_examples": [
+          "Eventual consistency never returns stale data.",
+          "Convergence is guaranteed even while writes continue."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "intermediate",
+    "follow_up": "A server restarts and resumes exactly where it left off with no lost updates. Which recovery technique made that possible, and what had to be stored beforehand?",
+    "id": "ds-12",
+    "question_text": "What is fault tolerance? Explain the fault–error–failure chain and the main techniques for achieving it.",
+    "reference_answer": "Fault tolerance lets a system keep delivering correct service despite faults. A fault (defect) can cause an error (bad internal state) which may lead to failure (wrong external service) — preventing any link breaks the chain. Techniques include redundancy in time, information, and hardware; detection via timeouts and checks; and recovery via checkpointing, logging, and replica failover, with masking hiding faults up to the assumed fault model.",
+    "subject": "Distributed Systems",
+    "topic": "Fault tolerance",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "fault can cause an error",
+          "error may lead to failure",
+          "defect versus bad state versus wrong service"
+        ],
+        "explanation": "Fault → error → failure: a defect creates bad state, which can surface as incorrect service.",
+        "id": "ds-12-c1",
+        "label": "Fault–error–failure chain",
+        "negative_examples": [
+          "Faults, errors, and failures are the same thing.",
+          "Bad internal state can never affect external service."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "extra copies of data and servers",
+          "retry an operation over time",
+          "error-correcting codes add information"
+        ],
+        "explanation": "Redundancy — extra hardware, retry/time redundancy, and coded information — supplies alternatives when parts fail.",
+        "id": "ds-12-c2",
+        "label": "Redundancy: hardware, time, information",
+        "negative_examples": [
+          "Fault tolerance needs no spare capacity anywhere.",
+          "Retrying a failed operation never helps."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "detect crashes with timeouts",
+          "recover from saved checkpoints",
+          "fail over to a live replica"
+        ],
+        "explanation": "Detection (timeouts, checks) plus recovery (checkpoints, logs, failover) restores correct service.",
+        "id": "ds-12-c3",
+        "label": "Detection and recovery",
+        "negative_examples": [
+          "Crashes need no detection mechanism.",
+          "Recovery is possible without any saved state."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "masks faults up to a limit",
+          "assumed fault model bounds guarantees",
+          "tolerates a bounded number of faults"
+        ],
+        "explanation": "Masking hides faults only within the assumed model (e.g. up to k crash faults); beyond it, guarantees end.",
+        "id": "ds-12-c4",
+        "label": "Masking limits and fault models",
+        "negative_examples": [
+          "Any system tolerates unlimited simultaneous faults.",
+          "Fault assumptions never limit the guarantees."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "intermediate",
+    "follow_up": "During a network partition, two sides each elect their own leader. What is this phenomenon, and which safety property did it violate?",
+    "id": "ds-13",
+    "question_text": "What is the leader election problem? State its requirements and explain how common algorithms solve it.",
+    "reference_answer": "Leader election picks exactly one coordinator that everyone agrees on. Safety demands at most one leader per term; liveness demands a leader eventually emerges after failures. The bully algorithm lets the highest-ID live process seize leadership, ring algorithms circulate candidacies, and Raft-style voting grants leadership only on a quorum of votes in one term — with re-election triggered when heartbeats stop, and partitions risking split-brain without quorum rules.",
+    "subject": "Distributed Systems",
+    "topic": "Leader election",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "agree on a single coordinator",
+          "exactly one leader at a time",
+          "everyone follows the same leader"
+        ],
+        "explanation": "All correct processes must converge on one shared coordinator.",
+        "id": "ds-13-c1",
+        "label": "Single agreed coordinator",
+        "negative_examples": [
+          "Each process should follow a different leader.",
+          "No agreement on the coordinator is needed."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "at most one leader per term",
+          "never two leaders simultaneously",
+          "safety of unique leadership"
+        ],
+        "explanation": "Safety: no two processes may consider themselves leader for the same term at once.",
+        "id": "ds-13-c2",
+        "label": "Safety: unique leadership",
+        "negative_examples": [
+          "Two simultaneous leaders satisfy safety.",
+          "Uniqueness of the leader does not matter."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "highest-ID process takes over",
+          "candidacy circulates around the ring",
+          "wins only with a quorum of votes"
+        ],
+        "explanation": "Bully (highest live ID wins), ring (messages circle to find the max), and quorum voting (Raft-style) are standard mechanisms.",
+        "id": "ds-13-c3",
+        "label": "Bully, ring, quorum voting",
+        "negative_examples": [
+          "The lowest-ID process always wins the bully algorithm.",
+          "A leader can be declared with no votes at all."
+        ],
+        "weight": 25
+      },
+      {
+        "accepted_phrases": [
+          "re-elect when heartbeats stop",
+          "partitions can cause split-brain",
+          "quorum rules prevent dual leaders"
+        ],
+        "explanation": "Missed heartbeats trigger re-election; without quorum rules a partition can produce two leaders (split-brain).",
+        "id": "ds-13-c4",
+        "label": "Failure handling and split-brain",
+        "negative_examples": [
+          "A dead leader needs no replacement.",
+          "Partitions can never produce two leaders."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "advanced",
+    "follow_up": "Your detector reports a deadlock that turns out to involve a transaction that already aborted. What is this called, and which delay caused it?",
+    "id": "ds-14",
+    "question_text": "What is distributed deadlock? Why is detecting it harder than in a centralized system?",
+    "reference_answer": "Distributed deadlock is a cycle of processes on different nodes each waiting for resources held by the next, with no single site seeing the whole wait-for graph. Detection is harder because state collection races with execution: delayed messages can fabricate cycles that already resolved (phantom deadlocks). Systems use centralized collectors, distributed edge-chasing probes, or diffusion computations — or sidestep detection with prevention (ordering, timeouts) and recovery by victim preemption.",
+    "subject": "Distributed Systems",
+    "topic": "Distributed deadlock",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "cycle of waiting processes",
+          "each waits for the next holder",
+          "hold-and-wait across nodes"
+        ],
+        "explanation": "A cross-node cycle where each process waits on a resource held by the next in the ring.",
+        "id": "ds-14-c1",
+        "label": "Wait-for cycle across nodes",
+        "negative_examples": [
+          "Deadlock needs no waiting cycle at all.",
+          "A single waiting process is already a deadlock."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "no site sees the whole graph",
+          "global state assembled from messages",
+          "local views are individually incomplete"
+        ],
+        "explanation": "No node holds the full wait-for graph; it must be assembled from messages that may already be stale.",
+        "id": "ds-14-c2",
+        "label": "No global view",
+        "negative_examples": [
+          "One node always sees the complete global state.",
+          "Message delays never distort the collected graph."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "false cycles from delayed messages",
+          "detected deadlock already resolved",
+          "stale snapshot fabricates a cycle"
+        ],
+        "explanation": "Phantom deadlocks are false positives: the reported cycle resolved before detection completed.",
+        "id": "ds-14-c3",
+        "label": "Phantom deadlocks",
+        "negative_examples": [
+          "Every detected cycle is a real deadlock.",
+          "Phantom deadlocks cannot occur with correct messaging."
+        ],
+        "weight": 20
+      },
+      {
+        "accepted_phrases": [
+          "probes trace the wait chain",
+          "prevent cycles by resource ordering",
+          "abort a victim to break the cycle"
+        ],
+        "explanation": "Edge-chasing probes or diffusion detect cycles; ordering/timeouts prevent them; victim preemption recovers.",
+        "id": "ds-14-c4",
+        "label": "Detection, prevention, recovery",
+        "negative_examples": [
+          "Deadlocks resolve themselves without any action.",
+          "Prevention and recovery are never needed."
+        ],
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "difficulty": "advanced",
+    "follow_up": "A partition splits your cluster into a majority and a minority side. If you must keep serving writes everywhere, what do readers risk, and how do you reconcile afterwards?",
+    "id": "ds-15",
+    "question_text": "State the CAP theorem precisely and explain what it forces designers to choose during a network partition.",
+    "reference_answer": "CAP says a distributed data system cannot guarantee linearizable consistency and total availability at the same time while a network partition lasts — partition tolerance is mandatory, so the real choice during a partition is between consistency (CP: refuse or block some requests, e.g. minority-side writes) and availability (AP: answer everything, possibly stale, and reconcile later). With no partition, all three are achievable together, so 'always pick any two' is a misleading slogan.",
+    "subject": "Distributed Systems",
+    "topic": "CAP theorem",
+    "concepts": [
+      {
+        "accepted_phrases": [
+          "partitions cannot be avoided",
+          "network splits will eventually happen",
+          "partition tolerance is mandatory"
+        ],
+        "explanation": "Real networks partition, so tolerating partitions is a requirement, not an option.",
+        "id": "ds-15-c1",
+        "label": "Partitions are unavoidable",
+        "negative_examples": [
+          "Network partitions can be prevented entirely.",
+          "Partition tolerance is an optional luxury."
+        ],
+        "weight": 30
+      },
+      {
+        "accepted_phrases": [
+          "choose between consistency and availability",
+          "block requests or serve stale data",
+          "trade-off applies during a partition"
+        ],
+        "explanation": "While partitioned, the system must sacrifice guaranteed consistency or guaranteed availability — one of the two gives.",
+        "id": "ds-15-c2",
+        "label": "C/A trade-off during partitions",
+        "negative_examples": [
+          "Full consistency and availability hold even while partitioned.",
+          "Partitions require no trade-off at all."
+        ],
+        "weight": 35
+      },
+      {
+        "accepted_phrases": [
+          "refuse minority-side writes",
+          "answer every request possibly stale",
+          "reconcile divergent replicas afterwards"
+        ],
+        "explanation": "CP designs fail or block some requests to stay consistent; AP designs stay responsive and merge differences later.",
+        "id": "ds-15-c3",
+        "label": "CP versus AP behaviour",
+        "negative_examples": [
+          "CP systems accept all writes on every side.",
+          "AP systems never need any reconciliation."
+        ],
+        "weight": 20
+      },
+      {
+        "accepted_phrases": [
+          "without partitions all three hold",
+          "pick-two slogan is misleading",
+          "choice only bites under partitions"
+        ],
+        "explanation": "When the network is healthy, consistency, availability, and partition tolerance coexist — 'pick any two, always' misstates the theorem.",
+        "id": "ds-15-c4",
+        "label": "No forced choice without partitions",
+        "negative_examples": [
+          "You must always sacrifice one of the three.",
+          "Healthy networks still force giving up consistency."
+        ],
+        "weight": 15
+      }
+    ]
+  }
+]

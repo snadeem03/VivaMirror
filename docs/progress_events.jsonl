@@ -27,3 +27,6 @@
 {"estimated_remaining_minutes":0,"event":"scope_changed","note":"Correction M1: US-15 interactive flow deferred post-MVP (content ships in US-10 data)","story_id":"US-15","timestamp":"2026-10-09T00:24:17+05:30"}
 {"estimated_remaining_minutes":0,"event":"scope_changed","note":"Correction M1: US-16 deferred post-MVP (US-07 comparison is committed progress view)","story_id":"US-16","timestamp":"2026-10-09T00:24:17+05:30"}
 {"estimated_remaining_minutes":485,"event":"sprint_replanned","note":"Correction M1: committed scope re-baselined 295 to 485 min (~8.1 h); 5 h figure superseded, kept as history; US-10 criteria aligned to data/questions.json","story_id":"SPRINT-1","timestamp":"2026-10-09T00:24:17+05:30"}
+{"estimated_remaining_minutes":60,"event":"started","note":"Milestone 1: US-10 implementation begins (sole In Progress card)","story_id":"US-10","timestamp":"2026-10-09T00:24:33+05:30"}
+{"estimated_remaining_minutes":10,"event":"review","note":"US-10 in Review: loader + 15-Q bank + 30 tests written; running validation","story_id":"US-10","timestamp":"2026-10-09T00:27:38+05:30"}
+{"estimated_remaining_minutes":0,"event":"completed","note":"US-10 Done: 15 questions/60 concepts validated, weights sum to 100, 30/30 pytest green on Python 3.11; acceptance criteria verified","story_id":"US-10","timestamp":"2026-10-09T00:27:38+05:30"}
