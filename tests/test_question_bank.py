@@ -200,8 +200,29 @@ def test_default_path_resolves_independent_of_cwd(tmp_path, monkeypatch):
 
 
 def test_loader_pulls_in_no_streamlit_or_speech_stack():
-    for module in ("streamlit", "torch", "whisper", "faster_whisper"):
-        assert module not in sys.modules, f"{module} must not be imported"
+    # Fresh interpreter: importing/using the loader must not pull the UI,
+    # speech, or network stacks (order-independent, unlike sys.modules).
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent
+    code = (
+        "import sys; from app.questions import load_question_bank; "
+        "load_question_bank(); "
+        "bad = [m for m in ('streamlit', 'torch', 'whisper', "
+        "'faster_whisper', 'requests') if m in sys.modules]; "
+        "assert not bad, 'forbidden imports: ' + ','.join(bad); "
+        "print('loader import clean')"
+    )
+    proc = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert proc.returncode == 0, proc.stderr or proc.stdout
 
 
 def test_error_names_the_offending_question_and_field():

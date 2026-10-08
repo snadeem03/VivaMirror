@@ -19,7 +19,7 @@ over **~8 hours** (485 ÷ 8 ≈ 61 min/hour).
 | Checkpoint | Clock (IST) | Ideal remaining | Actual remaining | Note |
 |------------|-------------|-----------------|------------------|------|
 | H0 start | 00:14 | 485 (re-based; was 295) | 485 | Sprint start; scope correction applied at ~00:25, nothing implemented |
-| H1 | 01:14 | 424 | _(fill)_ | |
+| H1 | 01:14 | 424 | 300 | Behind ideal: 185 of 485 done (US-10, US-06, US-01, US-02, US-05); rebaselined scope is larger than the old 5 h plan by design |
 | H2 | 02:14 | 364 | _(fill)_ | |
 | H3 | 03:14 | 303 | _(fill)_ | |
 | H4 | 04:14 | 242 | _(fill)_ | |

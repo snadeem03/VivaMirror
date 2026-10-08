@@ -1,68 +1,71 @@
-# VivaMirror — Demo Plan (tonight's MVP)
+# VivaMirror — Demo Plan (Milestone 3: working typed flow)
 
-Total: ~5 minutes. One question, two attempts, one comparison. State the input
-mode aloud every time it matters.
+Total: ~4 minutes. One question, two in-session attempts. State aloud that
+this is **typed practice** — audio is not built yet.
+
+Launch: `.\.venv\Scripts\python.exe -m streamlit run app/main.py`
 
 ## Setup (before audience)
 
-- App running via documented command (`py -3.11 -m streamlit run app/main.py`).
-- One curated Distributed Systems question chosen (e.g. quorum / CAP /
-  leader election — whichever rubric is most complete).
-- History empty (fresh local DB) so attempt 1 vs. attempt 2 is unambiguous.
+- App running via the documented command above.
+- CAP theorem question selected ("CAP theorem — advanced", ID ds-15).
+- Health evidence on hand: `/_stcore/health` → `ok` (HTTP 200), plus the
+  AppTest suite (11 UI tests drive the real widgets).
 
-## Act 1 — One incomplete answer → missed concepts (2 min)
+## Act 1 — One incomplete answer → missed concepts (1.5 min)
 
-1. Select the question; show prompt + that typed mode is being used
-   (say: "typed mode — transcription bypassed").
-2. Enter a deliberately thin answer covering ~1 of 4–5 concepts
-   (e.g. mention "replication" but omit quorum, consistency trade-offs,
-   failure handling).
-3. Show the editable-transcript step; keep text as-is.
-4. Evaluate. Point at: covered concept(s) WITH quoted evidence spans, missed
-   concepts with weights, coverage % (low), and the disclaimer that coverage
-   is rubric-phrase presence — not correctness, confidence, intelligence, or
-   speaking ability.
+1. Show the question selector (15 curated, Distributed Systems only) and the
+   "Typed practice mode" notice.
+2. Type a deliberately thin answer: `CAP is about databases. I think
+   partitions matter somehow.`
+3. Click **Review answer** — point out the editable review screen, keep text
+   as-is, click **Evaluate reviewed answer**.
+4. Show: **Concept coverage: 0.0%**, four `not_detected` concepts with
+   weights, the "not a correctness grade" explanation, and that no reference
+   answer is visible yet.
 
-Expected: low coverage, explicit missed list.
+Expected: 0.0%, explicit missed list, no reference shown.
 
 ## Act 2 — One improved answer → increased coverage (1.5 min)
 
-1. Hit Retry (same question, same rubric version).
-2. Enter an improved answer that adds the previously missed concepts in own
-   words (use accepted-phrase-adjacent wording from the rubric).
-3. Evaluate. Point at: previously missed concepts now covered with new
-   evidence spans, higher coverage %.
+1. Click **Try again** (same question, fresh in-session attempt — no history
+   is stored anywhere).
+2. Type: `Since network splits will eventually happen, I must choose
+   between consistency and availability; the trade-off applies during a
+   partition. My CP design will refuse minority-side writes and reconcile
+   divergent replicas afterwards, because without partitions all three hold
+   and the pick-two slogan is misleading.`
+3. Review → Evaluate. Show: **Concept coverage: 100.0%**, covered concepts
+   with earned weights and quoted evidence, then open the reference-answer
+   expander and read the assisted-practice note aloud.
 
-Expected: strictly higher coverage; delta visible per concept.
-Include one negated sentence in rehearsal (e.g. "the system does not use
-quorum") to show it earns no credit — mention the negation guard briefly.
+Expected: 100.0% with evidence spans; reference visible only post-evaluation.
 
-## Act 3 — Retry comparison (1 min)
+## Act 3 — Blank rejection + edit invalidation (0.5 min, live)
 
-1. Open the comparison/history view: attempt 1 vs. attempt 2 side by side —
-   coverage %, per-concept delta, timestamps, input mode labels.
-2. Note persistence: attempts are in local SQLite; raw audio retained nowhere.
+1. Try again, click **Review answer** with an empty box → helpful
+   blank-submission warning, no evaluation.
+2. After an evaluation, click **Edit answer** → result disappears and the
+   reference expander hides; the previous result never leaks.
 
-## Act 4 — Real audio transcription when available (0.5 min, conditional)
+## Not yet demoable (say so explicitly)
 
-- **If the audio path works live:** record/upload a short spoken version of
-  the improved answer, show the transcript in the editable step, correct one
-  word by hand (demonstrating review/edit), evaluate.
-- **If it does not work live:** say so explicitly —
-  "audio path unsupported in this environment; typed mode shown instead; the
-  transcription adapter interface exists and defaults to no paid API."
-  Never fake a transcription.
+- **Retry comparison / history (US-07/US-08):** "Try again" restarts
+  in-session only; nothing is persisted, no side-by-side view exists yet.
+- **Audio transcription (US-03/US-04):** typed mode shown instead; never fake
+  a transcription. The honesty line: "That attempt used typed mode."
 
 ## Fallback lines (honesty script)
 
 - "Coverage counts rubric concepts evidenced in the text — it is not a grade
   of correctness, confidence, intelligence, or speaking ability."
-- "That attempt used typed mode" / "That attempt used transcribed audio."
-- "Raw audio is not retained by default."
+- "That attempt used typed mode."
+- "Nothing is saved in this milestone — no history, no audio."
 
 ## Teacher-requirement evidence (30 s, after the app demo)
 
-Show `docs/kanban.md`, `docs/sprint_backlog.md` priorities, the GitHub Project
-board/issues (or the setup blocker + exact commands if auth is still missing),
-and note the CI plan (`ci.yml` lint+test; `release.yml` versioned archive on
-tag; archive ≠ hosting). No speech-model downloads or credentials in tests.
+Show `docs/kanban.md`, `docs/sprint_backlog.md` priorities, the verified
+GitHub Project board/issues, `docs/burndown.md`, and note US-13 CI
+(`ci.yml` lint+test; `release.yml` versioned archive on tag; archive ≠
+hosting) as the next required deliverable. No speech-model downloads or
+credentials in tests.

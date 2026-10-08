@@ -7,7 +7,9 @@ synthetic fixtures are used only where the bank has no suitable phrase
 to make tests pass.
 """
 
+import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -372,8 +374,26 @@ def test_question_with_bad_weight_rejected():
 
 
 def test_evaluator_has_no_ui_speech_or_network_dependencies():
-    for module in ("streamlit", "torch", "whisper", "faster_whisper", "requests"):
-        assert module not in sys.modules, f"{module} must not be imported"
-    import app.evaluation as evaluation_module
+    # Fresh interpreter: importing/using the evaluator must not pull the UI,
+    # speech, or network stacks (order-independent, unlike sys.modules).
+    import subprocess
 
-    assert "streamlit" not in dir(evaluation_module)
+    root = Path(__file__).resolve().parent.parent
+    code = (
+        "import sys; from app.questions import load_question_bank; "
+        "from app.evaluation import evaluate_answer; "
+        "qs = {q['id']: q for q in load_question_bank()}; "
+        "evaluate_answer(qs['ds-01'], 'A collection of autonomous nodes.'); "
+        "bad = [m for m in ('streamlit', 'torch', 'whisper', "
+        "'faster_whisper', 'requests') if m in sys.modules]; "
+        "assert not bad, 'forbidden imports: ' + ','.join(bad); "
+        "print('evaluator import clean')"
+    )
+    proc = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert proc.returncode == 0, proc.stderr or proc.stdout

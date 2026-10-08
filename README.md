@@ -1,8 +1,26 @@
 # VivaMirror — A Practice Viva That Shows What You Missed
 
-> **Milestone 0 status: planning only — application is NOT implemented yet.**
-> This commit contains scope, backlog, sprint plan, Kanban, architecture,
-> demo plan, and progress-event scaffolding. No application code exists.
+> **Milestone 3 status: typed-answer practice flow works.**
+> Implemented so far: curated 15-question bank + validation (US-10), CAP
+> rubric clarification, evidence-based evaluator (US-06), and the Streamlit
+> typed flow — question select → type → review/edit → evaluate → feedback
+> (US-01/US-02/US-05). Not yet built: audio/transcription (US-03/US-04),
+> SQLite history and retry comparison (US-07/US-08), CI workflows (US-13).
+
+## 0. Installation and launch (Windows PowerShell, Python 3.11)
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest tests/ -q   # full suite, no network/models/credentials
+.\.venv\Scripts\python.exe -m streamlit run app/main.py
+```
+
+- Runtime: `requirements.txt` (`streamlit==1.65.0`, tested — not a lockfile).
+- Development (tests): `requirements-dev.txt` (adds `pytest==9.1.1`).
+- The app opens in the browser automatically; stop it with `Ctrl+C`.
+- Audio answers are **not available yet**: the UI is explicitly labeled
+  "Typed practice mode". No login, API keys, or model downloads anywhere.
 
 ## 1. Problem
 
@@ -23,32 +41,35 @@ missed → retry and compare.
 ## 3. Proposed workflow (tonight's MVP)
 
 1. Select a topic / question (1 of 15 curated Distributed Systems questions).
-2. Answer by **recording / uploading audio where supported**, OR by
-   **typing the answer** (typed mode works independently of transcription).
-3. Transcribe audio through a **replaceable transcription adapter**
+2. Answer by **typing** (audio recording/upload arrives in US-03/US-04;
+   the UI says "typed practice" aloud and on screen).
+3. (Later) Transcribe audio through a **replaceable transcription adapter**
    (no paid API by default).
-4. **Review and edit** the transcript before evaluation.
+4. **Review and edit** the typed answer before evaluation (two separate
+   actions: "Review answer", then "Evaluate reviewed answer").
 5. Evaluate against a **curated rubric**: required concepts, weights,
    accepted phrases, reference answer, follow-up questions.
-6. See **covered vs. missed concepts** with matched evidence phrases.
-7. **Retry** the question; **compare attempts** (SQLite history + progress view).
+6. See **covered / not detected / needs-review concepts** with matched
+   evidence phrases and original-text offsets.
+7. **Retry** the question in-session ("Try again"); persisted history and
+   side-by-side comparison arrive with US-07/US-08.
 
 ## 4. MVP scope (tonight, ~5-hour accelerated student sprint)
 
-Included:
+Included (status as of Milestone 3):
 
-- Streamlit interface, Python 3.11.
+- Streamlit interface, Python 3.11. ✅ working (typed flow).
 - Distributed Systems only, 15 curated questions + rubrics
-  (concepts, weights, accepted phrases, reference answers, follow-ups).
-- Microphone recording / audio upload where the browser/OS supports it.
-- Replaceable transcription adapter (default: free/local, no paid API).
-- Typed-answer mode, usable even when transcription is unavailable.
-- Editable transcript before evaluation.
-- Transparent concept-coverage feedback with matched evidence spans.
+  (concepts, weights, accepted phrases, reference answers, follow-ups). ✅
+- Microphone recording / audio upload where the browser/OS supports it. ⏳ US-03.
+- Replaceable transcription adapter (default: free/local, no paid API). ⏳ US-04.
+- Typed-answer mode, usable even when transcription is unavailable. ✅
+- Editable transcript before evaluation. ✅ (review/edit screens, blank rejection)
+- Transparent concept-coverage feedback with matched evidence spans. ✅
 - Negation-safe matching: negated phrases (e.g. "not consistent",
-  "never uses quorum") must NOT earn credit merely for containing a keyword.
-- SQLite attempt history + retry comparison.
-- No login, no model training, no arbitrary document ingestion.
+  "never uses quorum") must NOT earn credit merely for containing a keyword. ✅
+- SQLite attempt history + retry comparison. ⏳ US-07/US-08.
+- No login, no model training, no arbitrary document ingestion. ✅
 
 Explicitly out of scope for tonight:
 
@@ -85,54 +106,68 @@ No heavyweight speech packages are installed in Milestone 0.
 - **Concept coverage ≠ correctness.** A high coverage percentage means the
   answer mentioned the rubric's expected concepts (with evidence); it does
   NOT measure complete correctness, confidence, intelligence, or speaking
-  ability. The UI must say so.
+  ability. The UI says so on every result.
 - **Rubric-bound.** Feedback quality is limited to 15 hand-curated rubrics;
-  paraphrases outside the accepted-phrase lists may be missed.
-- **Transcription risk.** Microphone/transcription is the primary delivery
-  risk on Windows browsers (permissions, device support, model availability).
-  Typed-answer mode exists precisely so the core loop stays usable.
-- **Local-only.** History lives in a local SQLite file; raw audio is NOT
-  retained by default (privacy by default).
+  valid paraphrases outside the accepted-phrase lists are reported as
+  not detected (tested behavior, not a bug being hidden). Full rules and
+  limits: `docs/evaluation.md`.
+- **Typed-only for now.** There is no microphone path yet, so nothing here
+  assesses speaking. Audio/transcription is committed scope (US-03/US-04),
+  not cut.
+- **Session-only.** Nothing is saved: no history, no accounts, no audio
+  retention at all. SQLite history arrives with US-08.
 - **Tonight's build is a practice aid**, not an examiner or grading authority.
 
-## 8. Repository layout (planned — files do not exist yet except docs)
+## 8. Repository layout
 
 ```text
 VivaMirror/
 ├── README.md
+├── requirements.txt          # runtime (streamlit)
+├── requirements-dev.txt      # dev (adds pytest)
 ├── docs/
 │   ├── product_backlog.md
 │   ├── sprint_backlog.md
 │   ├── kanban.md
+│   ├── burndown.md
 │   ├── progress_events.jsonl
 │   ├── architecture.md
+│   ├── evaluation.md
 │   └── demo_plan.md
-├── .github/workflows/      # planned in CI milestone (not yet implemented)
-├── app/                    # planned (not yet implemented)
-├── data/rubrics/           # planned: 15 curated Distributed Systems rubrics
-├── tests/                  # planned: meaningful, credential-free tests
+├── .github/workflows/      # planned in CI milestone (US-13, not yet implemented)
+├── app/
+│   ├── main.py             # Streamlit typed-practice flow (US-01/US-02/US-05)
+│   ├── flow.py             # Streamlit-independent state machine
+│   ├── questions.py        # bank loader + validation (US-10)
+│   └── evaluation.py       # concept-coverage evaluator (US-06)
+├── data/questions.json     # 15 curated Distributed Systems rubrics
+├── tests/                  # pytest suite, credential-free
 └── .gitignore
 ```
 
 ## 9. Agile tracking (teacher requirements)
 
 - Kanban board: `docs/kanban.md` (local mirror) + GitHub Project board
-  (once `gh` auth is available — see sprint backlog §7 for the blocker).
+  https://github.com/users/snadeem03/projects/2 (verified, 5 columns +
+  Priority/Estimate/Sprint fields).
 - Sprint backlog: `docs/sprint_backlog.md` (one accelerated student
-  development sprint, ~5 h estimate, start timestamp + timezone).
-- User-story priorities: `docs/product_backlog.md` (P0/P1/P2).
-- Burndown: derived from `docs/progress_events.jsonl`
+  development sprint, re-baselined to ~8 h in correction M1).
+- User-story priorities: `docs/product_backlog.md` (P0/P1/P2) and GitHub
+  issue labels: https://github.com/snadeem03/VivaMirror/issues.
+- Burndown: `docs/burndown.md`, inputs from `docs/progress_events.jsonl`
   (append-only; ISO timestamps with timezone + remaining-minutes estimates).
-- CI/CD in GitHub Actions: planned (lint+test; versioned archive on tag),
-  implemented in the later CI milestone — not in Milestone 0.
+- CI/CD in GitHub Actions: US-13, implemented in the CI milestone
+  (lint+test on push/PR; versioned archive on tag) — not yet built.
 
-## 10. How to verify Milestone 0
+## 10. How to verify Milestone 3
 
 ```powershell
+.\.venv\Scripts\python.exe -m pytest tests/ -q
+.\.venv\Scripts\python.exe -m streamlit run app/main.py
 git -C "D:\-_-\VivaMirror" status
-git -C "D:\-_-\VivaMirror" log --oneline -5
-Get-ChildItem "D:\-_-\VivaMirror\docs"
+git -C "D:\-_-\VivaMirror" log --oneline -8
 ```
 
-Expected: one planning commit `docs: initialize VivaMirror scope and sprint plan`,
-clean tree, no application code, no installed speech packages.
+Expected: full suite green, app serving the typed flow (health:
+`/_stcore/health` → `ok`), clean tree, commits `eeaf712` (flow helper)
+and slice-2 feedback commit below.

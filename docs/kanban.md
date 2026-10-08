@@ -17,7 +17,7 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 - **Maximum 1 implementation story in In Progress at any time** (single developer).
 - Planning/process cards do not count against the WIP limit.
 
-## Board (real status as of Milestone 2 — US-06 done, US-14 waiting)
+## Board (real status as of Milestone 3 — US-01/US-02/US-05 done)
 
 ### Done
 
@@ -28,6 +28,10 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | US-10 — Curated 15-Q bank | Done Milestone 1: 15 Qs / 60 concepts in `data/questions.json`, loader + validation, 30 pytest green |
 | Rubric fix — Clarify CAP definitions | Committed `a1a7b61`; ds-15 corrected, other 14 inspected, bank re-validated |
 | US-06 — Rubric evaluation + evidence, negation-safe | Done Milestone 2: `app/evaluation.py` + 35 tests, full suite 65/65; issue #6 closed |
+| M3 slice 1 — flow helper + requirements split | Committed `eeaf712`; `app/flow.py` + 11 tests; runtime/dev deps split |
+| US-01 — Question select | Done Milestone 3: 15 listed, stable IDs, reset-on-change; issue #1 closed |
+| US-02 — Typed-answer mode | Done Milestone 3: labeled typed path, no audio APIs; issue #2 closed |
+| US-05 — Review/edit before evaluation | Done Milestone 3: separate actions, blank rejection, edit invalidates; issue #5 closed |
 
 ### Review (waiting / under review — not done)
 
@@ -39,16 +43,13 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 
 | Card | Note |
 |------|------|
-| US-01 — Question select | Started Milestone 3 (~01:09 IST); state helper + selector slice |
+| US-09 — Streamlit flow (partial) | In Progress: select→answer→review→evaluate works; retry/compare pending US-07/US-08; not Done |
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 
 | Card | Estimate |
 |------|----------|
-| US-12 — Meaningful tests, CI-safe (evaluator subtask done, story open) | 40 min |
-| US-01 — Question select | 20 min |
-| US-02 — Typed-answer mode | 25 min |
-| US-05 — Review/edit before evaluation | 20 min |
+| US-12 — Meaningful tests, CI-safe (bank+evaluator+flow+UI subtasks done, story open) | 40 min |
 | US-04 — Transcription adapter | 35 min |
 | US-03 — Record/upload audio | 40 min |
 | US-08 — SQLite history + progress | 35 min |
