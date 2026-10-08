@@ -6,7 +6,11 @@ Remote mirror: GitHub Project board — **required, to be created now that `gh`
 auth works** (correction M1). Until its URL is verified below, this file is the
 source of truth. Do not claim the remote board exists until verified.
 
-Remote board URL: _(pending — fill in after verified creation)_
+Remote board URL: https://github.com/users/snadeem03/projects/2 (verified
+2026-10-09 ~00:36 IST — Status options Backlog/Ready/In Progress/Review/Done;
+custom fields Priority, Estimate, Sprint; all 17 story issues added with
+verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
+(US-01…US-17 map to issues #1…#17; #10 closed as done).
 
 ## WIP rule
 
