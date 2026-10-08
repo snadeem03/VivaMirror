@@ -106,7 +106,28 @@ def _write_temp_file(
 
 
 def _probe_duration_s(path: str) -> float:
-    """Audio duration in seconds without running speech inference."""
+    """Audio duration in seconds without running speech inference.
+
+    WAV (what the microphone widget records) is measured with the standard
+    library, so the common path needs no speech stack at all. Other formats
+    fall back to PyAV decoding, which reports a clear install hint when the
+    optional audio stack is absent.
+    """
+    if Path(path).suffix.lower() == ".wav":
+        try:
+            import wave
+
+            with wave.open(path, "rb") as handle:
+                frames = handle.getnframes()
+                rate = handle.getframerate()
+                if rate > 0:
+                    return frames / rate
+        except Exception as exc:
+            raise DecodingError(
+                f"could not decode WAV audio ({type(exc).__name__}); the "
+                f"file may be corrupt or not real audio"
+            ) from exc
+        raise DecodingError("could not determine WAV duration from the file")
     try:
         import av
     except ImportError as exc:

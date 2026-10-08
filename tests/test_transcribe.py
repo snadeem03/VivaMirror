@@ -106,10 +106,22 @@ def test_missing_speech_libraries_raise_actionable_error(monkeypatch):
 
 
 def test_missing_decoder_library_raise_actionable_error(monkeypatch, tmp_path):
+    # Non-WAV formats need PyAV; WAV never does (stdlib wave module).
     monkeypatch.setitem(sys.modules, "av", None)
-    data = _make_wav_bytes(tmp_path / "answer.wav", seconds=1.0)
     with pytest.raises(TranscriberUnavailableError, match="requirements-audio"):
-        transcribe_audio(data, "answer.wav", transcriber=FakeTranscriber())
+        transcribe_audio(b"\x00" * 100, "answer.mp3",
+                         transcriber=FakeTranscriber())
+
+
+def test_wav_needs_no_speech_stack(monkeypatch, tmp_path):
+    monkeypatch.setitem(sys.modules, "av", None)
+    monkeypatch.setitem(sys.modules, "faster_whisper", None)
+    data = _make_wav_bytes(tmp_path / "answer.wav", seconds=2.0)
+    result = transcribe_audio(
+        data, "answer.wav", transcriber=FakeTranscriber(), tmpdir=tmp_path
+    )
+    assert result["duration_s"] == pytest.approx(2.0, abs=0.1)
+    assert result["transcript"].startswith("copies on multiple nodes")
 
 
 # --- Validation before inference ---
