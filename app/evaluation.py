@@ -23,6 +23,11 @@ COVERED = "covered"
 NOT_DETECTED = "not_detected"
 NEEDS_REVIEW = "needs_review"
 
+# Bumped whenever matching/scoring semantics change. Stored attempts carry
+# this so later comparisons can refuse deltas across versions instead of
+# miscomparing historical results.
+EVALUATOR_VERSION = "1"
+
 DISCLAIMER = (
     "Concept coverage reflects matched rubric phrases shown as evidence; it is "
     "not a correctness, confidence, intelligence, or speaking-ability score. "
@@ -387,6 +392,7 @@ def evaluate_answer(question: dict, answer: str) -> dict:
         ]
         return {
             "question_id": question["id"],
+            "evaluator_version": EVALUATOR_VERSION,
             "coverage_pct": 0.0,
             "earned_weight": 0.0,
             "available_weight": total,
@@ -483,6 +489,7 @@ def evaluate_answer(question: dict, answer: str) -> dict:
     coverage = 100.0 * earned / total
     return {
         "question_id": question["id"],
+        "evaluator_version": EVALUATOR_VERSION,
         "coverage_pct": round(coverage, 1),
         "earned_weight": earned,
         "available_weight": total,

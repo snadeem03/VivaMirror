@@ -41,10 +41,15 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 |------|------|
 | US-14 — Tracking remainder | Waiting on sprint-end evidence (CI runs, final burndown); board/issues verified; stays open, see issue #14 |
 | US-09 — Streamlit flow (partial) | Waiting: typed + spoken flow done; only retry/compare (US-07/US-08) pending; not Done |
+| US-08 — SQLite history + progress | In Review: store module + 20 tests green; save/history UI pending US-07 slice |
 
 ### In Progress (max 1)
 
-*(empty — US-04 under review; US-03 starts next, sequentially)*
+*(empty — US-08 under review; US-07 starts next, sequentially)*
+
+### In Progress (max 1)
+
+*(empty — US-08 under review; US-07 starts next, sequentially)*
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 
