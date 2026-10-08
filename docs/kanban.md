@@ -34,32 +34,26 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | US-05 — Review/edit before evaluation | Done Milestone 3: separate actions, blank rejection, edit invalidates; issue #5 closed |
 | US-04 — Transcription adapter | Done Milestone 4: adapter + UI routing verified, real base.en check passed; issue #4 closed |
 | US-03 — Record/upload audio | Done Milestone 4: mic + upload + transcribe→review→evaluate, session-only audio, typed independent; issue #3 closed |
+| US-08 — SQLite history + progress | Done Milestone 5: local DB, explicit save, history + progress, schema docs; issue #8 closed |
+| US-07 — Retry + compare | Done Milestone 5: same-question retry, pp deltas, newly/regressed, evidence inspection; issue #7 closed |
+| US-09 — Streamlit end-to-end flow | Done Milestone 5: full loop reachable, no login; issue #9 closed |
+| US-11 — Guardrails in code | Done Milestone 5: no-audio-retention verified, statements present, no login/tracking/paid API; issue #11 closed |
 
 ### Review (waiting / under review — not done)
 
 | Card | Note |
 |------|------|
 | US-14 — Tracking remainder | Waiting on sprint-end evidence (CI runs, final burndown); board/issues verified; stays open, see issue #14 |
-| US-09 — Streamlit flow (partial) | Waiting: typed + spoken flow done; only retry/compare (US-07/US-08) pending; not Done |
-| US-08 — SQLite history + progress | In Review: store module + 20 tests green; save/history UI pending US-07 slice |
 
 ### In Progress (max 1)
 
-*(empty — US-08 under review; US-07 starts next, sequentially)*
-
-### In Progress (max 1)
-
-*(empty — US-08 under review; US-07 starts next, sequentially)*
+*(empty — US-07 completed; Milestone 5 done, CI milestone next)*
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 
 | Card | Estimate |
 |------|----------|
-| US-12 — Meaningful tests, CI-safe (bank+evaluator+flow+UI subtasks done, story open) | 40 min |
-| US-08 — SQLite history + progress | 35 min |
-| US-07 — Retry + compare | 30 min |
-| US-09 — Streamlit flow (trimmed) | 30 min |
-| US-11 — Guardrails in code | 15 min |
+| US-12 — Meaningful tests, CI-safe (bank+evaluator+flow+UI+store+history subtasks done, story open) | 40 min |
 | US-13 — GitHub Actions CI + archive | 30 min |
 | US-17 — Hourly burndown | 20 min |
 

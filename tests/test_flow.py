@@ -225,3 +225,95 @@ def test_retry_clears_audio(bank):
     flow.retry_question(state)
     assert state["audio"] is None
     assert state["answer_source"] == ""
+
+
+# --- Explicit save and assistance (US-07/US-08 slice) ---------------------------------------
+
+
+def _evaluated(bank, qid="ds-15", text="Network splits will eventually happen."):
+    state = flow.initial_state()
+    flow.select_question(state, qid)
+    flow.update_draft(state, text)
+    flow.submit_for_review(state)
+    assert flow.confirm_evaluation(state, bank[qid]) is True
+    return state
+
+
+def test_save_current_round_trip_and_idempotent_resave(bank, tmp_path):
+    from app import store as store_module
+
+    db = str(tmp_path / "t.db")
+    state = _evaluated(bank)
+    assert state["save_id"]
+    inserted, stored = flow.save_current(state, bank["ds-15"], db)
+    assert inserted is True
+    assert state["saved"] == stored["id"] == state["save_id"]
+    assert stored["reviewed_text"].startswith("Network splits")
+    assert stored["input_mode"] == "typed"
+    assert stored["assisted"] is False
+
+    inserted, stored = flow.save_current(state, bank["ds-15"], db)
+    assert inserted is False  # rerun/double-click duplicates nothing
+    assert len(store_module.list_attempts(db)) == 1
+
+
+def test_new_evaluation_gets_new_save_identity(bank, tmp_path):
+    from app import store as store_module
+
+    db = str(tmp_path / "t.db")
+    first = _evaluated(bank)
+    _, stored_first = flow.save_current(first, bank["ds-15"], db)
+    flow.retry_question(first)
+    assert first["saved"] is None  # save identity cleared with the attempt
+    flow.update_draft(first, "Without partitions all three hold.")
+    flow.submit_for_review(first)
+    flow.confirm_evaluation(first, bank["ds-15"])
+    assert first["save_id"]  # a genuinely new evaluation mints a new id
+    _, stored_second = flow.save_current(first, bank["ds-15"], db)
+    assert stored_second["id"] != stored_first["id"]
+    assert len(store_module.list_attempts(db)) == 2
+
+
+def test_save_requires_an_evaluation(bank, tmp_path):
+    state = flow.initial_state()
+    flow.select_question(state, "ds-15")
+    with pytest.raises(flow.FlowError, match="nothing evaluated"):
+        flow.save_current(state, bank["ds-15"], str(tmp_path / "t.db"))
+
+
+def test_retry_preserves_assistance_but_select_resets(bank):
+    state = flow.initial_state()
+    flow.select_question(state, "ds-15")
+    assert state["assisted"] is False
+    flow.reveal_reference(state)
+    assert state["assisted"] is True
+    assert state["show_reference"] is True
+    flow.retry_question(state)  # Try again must not launder assistance
+    assert state["assisted"] is True
+    assert state["show_reference"] is True
+    flow.select_question(state, "ds-08")  # new question, fresh session flag
+    assert state["assisted"] is False
+    assert state["show_reference"] is False
+
+
+def test_edit_and_mode_switch_clear_save_identity(bank):
+    state = _evaluated(bank)
+    assert state["save_id"]
+    flow.edit_after_evaluation(state)
+    assert state["save_id"] is None
+    assert state["saved"] is None
+
+    state = _evaluated(bank)
+    flow.switch_mode(state, flow.MODE_SPOKEN)
+    assert state["save_id"] is None
+
+
+def test_spoken_save_records_input_mode(bank, tmp_path):
+    state = flow.initial_state()
+    flow.select_question(state, "ds-15")
+    flow.switch_mode(state, flow.MODE_SPOKEN)
+    flow.set_audio(state, _audio())
+    flow.submit_transcript(state, "Network splits will eventually happen.")
+    flow.confirm_evaluation(state, bank["ds-15"])
+    _, stored = flow.save_current(state, bank["ds-15"], str(tmp_path / "t.db"))
+    assert stored["input_mode"] == "spoken"

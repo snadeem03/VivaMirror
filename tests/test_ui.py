@@ -33,6 +33,14 @@ def _headers(at):
     return [h.value for h in at.header]
 
 
+def _reference_visible(at):
+    return any("Reference answer" in s.value for s in at.subheader)
+
+
+def _reveal_button_present(at):
+    return any(b.key == "reveal_btn" for b in at.button)
+
+
 def _select_question(at, idx):
     """Select a bank question by index (tests use ds-15 content: idx 14)."""
     at.selectbox(key="question_select").set_value(_labels(at)[idx]).run()
@@ -45,7 +53,8 @@ def test_initial_load_lists_all_15_questions():
     assert len(_labels(at)) == 15
     assert "CAP theorem" in _labels(at)[-1]
     assert at.text_area(key="draft_input") is not None
-    assert at.expander == []  # no reference before evaluation
+    assert not _reference_visible(at)  # no reference before evaluation
+    assert not _reveal_button_present(at)
 
 
 def test_question_change_resets_stale_result():
@@ -59,7 +68,7 @@ def test_question_change_resets_stale_result():
     _select_question(at, 7)
     assert not any("Concept coverage" in h for h in _headers(at))
     assert at.text_area(key="draft_input").value == ""
-    assert at.expander == []
+    assert not _reference_visible(at)
 
 
 def test_draft_review_evaluate_flow_reports_real_coverage():
@@ -74,7 +83,12 @@ def test_draft_review_evaluate_flow_reports_real_coverage():
 
     at.button(key="evaluate_btn").click().run()
     assert "Concept coverage: 65.0%" in _headers(at)
-    assert len(at.expander) == 1  # reference available only after evaluation
+    # Reference is explicitly revealed, never auto-shown:
+    assert not _reference_visible(at)
+    assert _reveal_button_present(at)
+    at.button(key="reveal_btn").click().run()
+    assert _reference_visible(at)
+    assert any("assisted" in m.value.lower() for m in at.markdown)
 
 
 def test_blank_answer_rejected_with_message():
@@ -95,7 +109,7 @@ def test_edit_after_evaluation_invalidates_result():
 
     at.button(key="edit_btn").click().run()
     assert not any("Concept coverage" in h for h in _headers(at))
-    assert at.expander == []  # reference hidden again once editing resumes
+    assert not _reference_visible(at)  # hidden again once editing resumes
     assert PARTIAL_DS15 in at.text_area(key="review_input").value
 
 
@@ -139,7 +153,7 @@ def test_try_again_starts_fresh_attempt():
     at.button(key="retry_btn").click().run()
     assert not any("Concept coverage" in h for h in _headers(at))
     assert at.text_area(key="draft_input").value == ""
-    assert at.expander == []
+    assert not _reference_visible(at)
 
 
 @pytest.mark.parametrize("idx", [0, 7, 14])

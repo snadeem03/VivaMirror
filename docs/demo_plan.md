@@ -1,77 +1,85 @@
-# VivaMirror — Demo Plan (Milestone 4: typed + spoken flow)
+# VivaMirror — Demo Plan (Milestone 5: save → retry → compare)
 
-Total: ~5 minutes. One typed question, one spoken question. State the input
-mode aloud every time it matters.
+Total: ~6 minutes. Typed + spoken practice, two saved attempts, one
+comparison. State the input mode and the assisted state aloud every time
+they matter.
 
 Launch: `.\.venv\Scripts\python.exe -m streamlit run app/main.py`
 Audio install (once): `.\.venv\Scripts\python.exe -m pip install -r requirements-audio.txt`
 
 ## Setup (before audience)
 
-- App running via the documented command; audio stack installed.
+- App running; audio stack installed; model cache warm (transcribe once
+  beforehand — first run downloads ~150 MB).
 - CAP theorem question ready ("CAP theorem — advanced", ID ds-15).
-- First transcription of the session may take ~15 s (one-time model
-  download); transcribe the demo clip once beforehand so the cache is warm.
-- Health evidence: `/_stcore/health` → `ok` (HTTP 200); AppTest suite
-  (13 spoken-flow tests drive the real uploader + adapter with a labeled
-  test double; 1 test forces the speech stack absent and runs typed only).
+- Fresh local history (delete any rehearsal attempts via History → Delete
+  all, with the confirmation checkbox) so attempt 1 vs. 2 is unambiguous.
+- Health evidence: `/_stcore/health` → `ok` (HTTP 200); full suite 158/158
+  incl. 12 History AppTest tests on temp databases (real DB never touched).
 
-## Act 1 — Typed answer → missed concepts (1 min)
+## Act 1 — Spoken answer → save (2 min)
 
-1. Keep **Typed answer** mode; show the mode label and the notice that
-   nothing is saved.
-2. Type a deliberately thin answer: `CAP is about databases. I think
-   partitions matter somehow.` → Review → Evaluate.
-3. Show: **Concept coverage: 0.0%**, four `not_detected` concepts with
-   weights, the not-a-correctness-grade note. No reference visible yet.
+1. Select the CAP question, switch to **Spoken answer** mode. State: "spoken
+   mode — previous result cleared, typed draft kept."
+2. **Upload** the rehearsed thin clip: "Network splits will eventually
+   happen." (Or record it live if the mic works — either way, play it back
+   first.) Click **Transcribe**, correct nothing (it is clean), Evaluate.
+3. Show: **Concept coverage: 30.0%**, one covered concept with evidence.
+4. Click **Save attempt** → "Saved attempt … stored locally on this computer
+   only." State: "explicit save — nothing autosaves."
 
-## Act 2 — Spoken answer → transcript → review → coverage (2.5 min)
+## Act 2 — Retry → improved answer → save (1.5 min)
 
-1. Switch to **Spoken answer** mode. State: "spoken mode — typed draft kept,
-   previous result cleared."
-2. **Upload** a short pre-recorded WAV (≤20 MB, ≤3 min; e.g. the rehearsed
-   CAP answer). If the room PC allows mic use, record live instead — either
-   way, play it back first so the audience hears the source audio.
-3. Click **Transcribe** (explicit — nothing auto-transcribes). Point at the
-   loading state, then the editable transcript in review.
-4. Fix one word by hand to demonstrate that transcription accuracy and
-   concept coverage are separate things, then **Evaluate**.
-5. Show covered concepts with earned weights and quoted evidence, the
-   "spoken answer (transcribed)" caption, then open the reference expander
-   and read the assisted-practice note aloud.
+1. Click **Try again** (same question; prior save kept; nothing persisted
+   beyond the two saves you make).
+2. Upload/record the improved script: "Since network splits will eventually
+   happen, I must choose between consistency and availability; the
+   trade-off applies during a partition. My CP design will refuse
+   minority-side writes and reconcile divergent replicas afterwards,
+   because without partitions all three hold and the pick-two slogan is
+   misleading." → Review → Evaluate → **100.0%** → **Save attempt**.
+3. Open **History** (sidebar): 2 saved attempts, best 100.0%, latest 100.0%,
+   both labeled typed/spoken + assisted/unassisted honestly.
 
-Rehearsed upload script (reads at ~100.0% on ds-15): "Since network splits
-will eventually happen, I must choose between consistency and availability;
-the trade-off applies during a partition. My CP design will refuse
-minority-side writes and reconcile divergent replicas afterwards, because
-without partitions all three hold and the pick-two slogan is misleading."
+## Act 3 — Comparison (1.5 min)
 
-## Act 3 — Failure honesty (0.5 min, live or narrated)
+1. In History, keep the two attempts selected, click **Compare**.
+2. Show: earlier/later timestamps, 30.0% → 100.0%, **+70.0 percentage
+   points** (say "percentage points, not percent"), newly-covered concepts
+   (C/A trade-off, CP vs AP, no-forced-choice), both reviewed answers as
+   plain text, and the warning that higher coverage does not prove improved
+   correctness or speaking ability.
+3. Mention: version mismatch would disable the delta with a warning instead
+   of an invalid comparison; historical answers are never reinterpreted.
 
-1. Upload a corrupt/oversized file (or narrate): the app rejects it before
-   inference with a size/format message and offers typed practice.
-2. If transcription ever fails live: read the error aloud, switch to Typed
-   mode, continue. Never present a canned transcript as real speech.
+## Act 4 — Assistance + deletion honesty (0.5 min)
+
+1. Back in Practice, click **Reveal reference answer** → reference appears
+   with the assisted-practice note. State: "further practice is assisted
+   this session; Try again does not reset it; a fresh session cannot prove
+   assistance either way."
+2. In History, delete one attempt, then (only if the room agrees) show the
+   Delete-all confirmation checkbox. State: "saved answers remain locally
+   on this computer; raw audio is never stored anywhere."
 
 ## Not yet demoable (say so explicitly)
 
-- **Retry comparison / history (US-07/US-08):** "Try again" restarts
-  in-session only; nothing persists, no side-by-side view yet.
+- **Hosted deployment / CI evidence (US-13):** next required deliverable;
+  the archive-vs-hosting distinction stands.
 - **Mic widget in this room:** if the browser blocks the microphone, say so
-  and use the upload path — same review → evaluate flow.
+  and use the upload path — same review → evaluate → save flow.
 
 ## Fallback lines (honesty script)
 
 - "Coverage counts rubric concepts evidenced in the text — it is not a grade
   of correctness, confidence, intelligence, or speaking ability."
-- "That attempt used typed mode." / "That attempt used transcribed speech —
-  I corrected the transcript before evaluating."
-- "Audio stays in this session only; nothing is saved or uploaded."
+- "That attempt used transcribed speech — I corrected the transcript before
+  evaluating." / "That attempt used typed mode."
+- "Saved locally on this computer; audio is never stored."
 
 ## Teacher-requirement evidence (30 s, after the app demo)
 
 Show `docs/kanban.md`, `docs/sprint_backlog.md` priorities, the verified
-GitHub Project board/issues, `docs/burndown.md` with the H1 checkpoint, and
-note US-13 CI (`ci.yml` lint+test; `release.yml` versioned archive on tag;
-archive ≠ hosting) as the next required deliverable. No speech-model
-downloads or credentials in the default test suite.
+GitHub Project board/issues, `docs/burndown.md` checkpoints, and note US-13
+CI as the remaining required build step. Default test suite has no
+speech-model downloads or credentials.

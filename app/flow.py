@@ -1,15 +1,20 @@
-"""Practice-flow state machine (US-01/US-02/US-05/US-09 slice).
+"""Practice-flow state machine (US-01/US-02/US-05/US-07/US-08/US-09 slice).
 
 Streamlit-independent and fully testable: explicit stages and transitions,
-no widget calls, no persistence. Only current-session draft/review/result
-data is stored here; nothing is written to disk.
+no widget calls. Only current-session draft/review/result/save data is kept
+in memory; persistence goes through :mod:`app.store` on explicit save only.
+Raw audio is never part of this state (only transcript text).
 
 Stages: "answer" -> "review" -> "evaluated".
 """
 
 from __future__ import annotations
 
-from app.evaluation import evaluate_answer
+import uuid
+from datetime import datetime, timezone
+
+from app import store
+from app.evaluation import EVALUATOR_VERSION, evaluate_answer
 
 STAGE_ANSWER = "answer"
 STAGE_REVIEW = "review"
@@ -40,6 +45,10 @@ def initial_state() -> dict:
         "reviewed": "",
         "answer_source": "",  # "typed" | "spoken" | ""
         "result": None,
+        "save_id": None,  # stable id for the current evaluation (idempotency)
+        "saved": None,  # attempt id once this evaluation has been saved
+        "assisted": False,  # reference revealed for this question (session)
+        "show_reference": False,
         "stage": STAGE_ANSWER,
         "error": "",
     }
@@ -58,6 +67,10 @@ def select_question(state: dict, question_id: str) -> dict:
     state["reviewed"] = ""
     state["answer_source"] = ""
     state["result"] = None
+    state["save_id"] = None
+    state["saved"] = None
+    state["assisted"] = False
+    state["show_reference"] = False
     state["stage"] = STAGE_ANSWER
     state["error"] = ""
     return state
@@ -106,6 +119,8 @@ def confirm_evaluation(state: dict, question: dict) -> bool:
         state["error"] = BLANK_MESSAGE
         return False
     state["result"] = evaluate_answer(question, state["reviewed"])
+    state["save_id"] = uuid.uuid4().hex  # new id per genuine evaluation
+    state["saved"] = None
     state["stage"] = STAGE_EVALUATED
     state["error"] = ""
     return True
@@ -114,18 +129,27 @@ def confirm_evaluation(state: dict, question: dict) -> bool:
 def edit_after_evaluation(state: dict) -> dict:
     """Return an evaluated answer to review; invalidates the old result."""
     state["result"] = None
+    state["save_id"] = None
+    state["saved"] = None
     state["stage"] = STAGE_REVIEW
     state["error"] = ""
     return state
 
 
 def retry_question(state: dict) -> dict:
-    """Start over on the same question (same-session practice, no history)."""
+    """Start over on the same question (same-session practice, no history).
+
+    Clears answer, audio, transcript, evaluation, and save identity — but
+    keeps the session assistance flag: practice after a reveal stays
+    assisted, and Try again must not launder it back to unassisted.
+    """
     state["draft"] = ""
     state["audio"] = None
     state["reviewed"] = ""
     state["answer_source"] = ""
     state["result"] = None
+    state["save_id"] = None
+    state["saved"] = None
     state["stage"] = STAGE_ANSWER
     state["error"] = ""
     return state
@@ -139,6 +163,8 @@ def switch_mode(state: dict, mode: str) -> dict:
     state["reviewed"] = ""
     state["answer_source"] = ""
     state["result"] = None
+    state["save_id"] = None
+    state["saved"] = None
     state["stage"] = STAGE_ANSWER
     state["error"] = ""
     return state
@@ -181,6 +207,52 @@ def submit_transcript(state: dict, transcript: str) -> bool:
     state["stage"] = STAGE_REVIEW
     state["error"] = ""
     return True
+
+
+def reveal_reference(state: dict) -> dict:
+    """Explicitly reveal the reference answer for this question (session).
+
+    Marks subsequent practice on the question assisted. Cross-session
+    assistance cannot be established, which the UI discloses.
+    """
+    state["assisted"] = True
+    state["show_reference"] = True
+    return state
+
+
+def save_current(state: dict, question: dict, db_path=None) -> tuple[bool, dict]:
+    """Save the current evaluation as one attempt (explicit save only).
+
+    Uses the stable save_id minted at evaluation time, so reruns and double
+    clicks return the stored row instead of duplicating it. A genuinely new
+    evaluation carries a new save_id and creates a new row. Returns
+    (inserted, stored_record); StoreError from the database propagates for
+    the UI to report without losing reviewed text.
+    """
+    if state["stage"] != STAGE_EVALUATED or state["result"] is None:
+        raise FlowError("nothing evaluated to save yet")
+    if question is None or question.get("id") != state["question_id"]:
+        raise FlowError("result question does not match the selected question")
+    if not state.get("save_id"):
+        raise FlowError("current evaluation has no save identity")
+    record = {
+        "id": state["save_id"],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "question_id": state["question_id"],
+        "rubric_fingerprint": store.fingerprint_for_question(question),
+        "rubric_snapshot": store.snapshot_for_question(question),
+        "evaluator_version": state["result"].get("evaluator_version")
+        or EVALUATOR_VERSION,
+        "input_mode": state["mode"],
+        "reviewed_text": state["reviewed"],
+        "result": state["result"],
+        "coverage_pct": state["result"]["coverage_pct"],
+        "assisted": bool(state.get("assisted", False)),
+    }
+    inserted, stored = store.save_attempt(db_path, record)
+    if inserted:
+        state["saved"] = stored["id"]
+    return inserted, stored
 
 
 def can_view_reference(state: dict) -> bool:

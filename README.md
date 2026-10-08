@@ -120,8 +120,9 @@ No heavyweight speech packages are installed in Milestone 0.
 - **Typed-only for now.** There is no microphone path yet, so nothing here
   assesses speaking. Audio/transcription is committed scope (US-03/US-04),
   not cut.
-- **Session-only.** Nothing is saved: no history, no accounts, no audio
-  retention at all. SQLite history arrives with US-08.
+- **Session-only.** Nothing is saved unless you press **Save attempt**:
+  saved attempts live in a local SQLite database (see §12). No history,
+  no accounts, no audio retention at all beyond the session.
 - **Tonight's build is a practice aid**, not an examiner or grading authority.
 
 ## 8. Repository layout
@@ -211,3 +212,32 @@ and `510d3c2` (feedback UI).
   synthetic Windows-TTS WAV (exact transcript, `en`, 8.92 s duration).
   Microphone recording itself needs a browser with mic permission — a manual
   check still outstanding (see demo plan).
+
+## 12. Attempt history, retry, and comparison (US-07/US-08, Milestone 5)
+
+- **Database location and privacy:** saved attempts live in
+  `data/local/vivamirror.db` (SQLite, git-ignored local runtime data; set
+  `VIVAMIRROR_DB` to override the path). Everything stays on this computer —
+  one shared installation history, no accounts, no user separation, no
+  network. Each row holds: attempt ID, UTC timestamp, question ID, rubric
+  snapshot + fingerprint, evaluator version, input mode, reviewed text,
+  full result, coverage, and whether the reference was revealed.
+  **Raw audio is never stored** (the schema has no audio column; saving
+  audio is refused by validation and covered by tests).
+- **Explicit saving and deletion:** nothing autosaves — press **Save attempt**
+  after an evaluation. Re-clicking never duplicates (stable per-evaluation
+  ID + database uniqueness). Delete one attempt any time; **Delete all**
+  needs the explicit confirmation checkbox. History shows a helpful empty
+  state when there is nothing saved.
+- **Retry/comparison behavior:** Practice → Save → **Try again** (same
+  question, fresh transient state, prior saves kept) → Save → History →
+  pick two attempts → **Compare**. Deltas are reported in **percentage
+  points**, with newly-covered and regressed concepts plus both reviewed
+  answers for inspection.
+- **Assistance and comparison limitations:** revealing the reference marks
+  the question assisted for the session (Try again does not reset it);
+  cross-session assistance cannot be established, and the UI says so. If
+  rubric/evaluator versions differ, the direct delta is disabled with a
+  warning instead of an invalid comparison — historical answers are never
+  reinterpreted. Higher coverage never proves improved correctness or
+  speaking ability.

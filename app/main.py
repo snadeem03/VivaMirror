@@ -14,9 +14,11 @@ evaluate, or overwrite input by themselves.
 
 from __future__ import annotations
 
+import os
+
 import streamlit as st
 
-from app import flow
+from app import flow, store
 from app.questions import load_question_bank
 from app.transcribe import (
     FasterWhisperBackend,
@@ -39,6 +41,16 @@ STATUS_HEADING = {
 def get_bank() -> list[dict]:
     """Load the validated question bank once per session."""
     return load_question_bank()
+
+
+def _db_path() -> str:
+    """Local history database path.
+
+    ``VIVAMIRROR_DB`` overrides it (used by tests for temp databases);
+    otherwise the ignored local runtime path under ``data/local/``.
+    """
+    override = os.environ.get("VIVAMIRROR_DB")
+    return override if override else str(store.default_db_path())
 
 
 def _state() -> dict:
@@ -88,6 +100,175 @@ def _find_question(bank: list[dict], question_id: str) -> dict | None:
         if question["id"] == question_id:
             return question
     return None
+
+
+def _attempt_label(attempt: dict) -> str:
+    tag = "assisted" if attempt["assisted"] else "unassisted"
+    created = attempt["created_at"].replace("T", " ")[:16]
+    return (
+        f"{created} · {attempt['coverage_pct']:.1f}% · "
+        f"{attempt['input_mode']} · {tag} · {attempt['id'][:8]}"
+    )
+
+
+def _render_history(bank: list[dict]) -> None:
+    st.header("History")
+    st.caption(
+        "Saved attempts live in a local database on this computer only — "
+        "one shared installation history, no accounts, no user separation."
+    )
+    message = st.session_state.pop("hist_msg", "")
+    if message:
+        st.success(message)
+    try:
+        attempts = store.list_attempts(_db_path())
+    except store.StoreError as exc:
+        st.error(f"Could not read the local history ({exc}).")
+        return
+    if not attempts:
+        st.info(
+            "No saved attempts yet. Evaluate an answer in Practice, then "
+            "press **Save attempt** — only explicitly saved attempts appear "
+            "here."
+        )
+        return
+
+    by_question: dict[str, list[dict]] = {}
+    for attempt in attempts:
+        by_question.setdefault(attempt["question_id"], []).append(attempt)
+    labels = []
+    ids = []
+    for question in bank:
+        if question["id"] in by_question:
+            count = len(by_question[question["id"]])
+            labels.append(f"{question['topic']} ({count} saved)")
+            ids.append(question["id"])
+    chosen = st.selectbox("Question history", labels, key="hist_question")
+    qid = ids[labels.index(chosen)]
+    mine = by_question[qid]
+    coverages = [a["coverage_pct"] for a in mine]
+    st.write(
+        f"{len(mine)} saved attempt(s) · best {max(coverages):.1f}% · "
+        f"latest {coverages[-1]:.1f}%"
+    )
+
+    options = [_attempt_label(a) for a in mine]
+    by_label = dict(zip(options, mine))
+    default_b = len(options) - 1
+    default_a = max(0, default_b - 1)
+    label_a = st.selectbox("Earlier attempt", options, index=default_a, key="cmp_a")
+    label_b = st.selectbox("Later attempt", options, index=default_b, key="cmp_b")
+    if st.button("Compare", key="compare_btn"):
+        st.session_state["compare_pair"] = (by_label[label_a]["id"], by_label[label_b]["id"])
+    pair = st.session_state.get("compare_pair")
+    if pair is not None:
+        first = next((a for a in mine if a["id"] == pair[0]), None)
+        second = next((a for a in mine if a["id"] == pair[1]), None)
+        if first is None or second is None:
+            st.warning("One of the selected attempts no longer exists.")
+        else:
+            _render_comparison(first, second)
+
+    st.subheader("Saved answers")
+    for attempt in reversed(mine):
+        assisted = "assisted" if attempt["assisted"] else "unassisted"
+        st.markdown(
+            f"**{_attempt_label(attempt)}** — "
+            f"{attempt['coverage_pct']:.1f}% ({assisted})"
+        )
+        st.text(attempt["reviewed_text"])
+
+    st.subheader("Delete")
+    del_options = [_attempt_label(a) for a in attempts]
+    st.selectbox("Attempt to delete", del_options, key="del_one")
+
+    def _do_delete_one() -> None:
+        label = st.session_state.get("del_one", "")
+        target = next(
+            (a for a in attempts if _attempt_label(a) == label), None
+        )
+        if target is None:
+            st.session_state["hist_msg"] = "That attempt is already gone."
+            return
+        try:
+            removed = store.delete_attempt(_db_path(), target["id"])
+        except store.StoreError as exc:
+            st.session_state["hist_msg"] = f"Could not delete ({exc})."
+        else:
+            st.session_state.pop("compare_pair", None)
+            st.session_state["hist_msg"] = (
+                "Deleted." if removed else "Already gone."
+            )
+
+    def _do_wipe_all() -> None:
+        try:
+            count = store.delete_all_attempts(_db_path())
+        except store.StoreError as exc:
+            st.session_state["hist_msg"] = f"Could not delete ({exc})."
+        else:
+            st.session_state.pop("compare_pair", None)
+            st.session_state["hist_msg"] = f"Deleted {count} attempt(s)."
+        st.session_state["confirm_wipe"] = False
+
+    st.button("Delete selected attempt", key="del_btn", on_click=_do_delete_one)
+    st.checkbox(
+        f"Yes, delete all {len(attempts)} saved attempt(s)",
+        key="confirm_wipe",
+    )
+    st.button(
+        "Delete all attempts",
+        key="wipe_btn",
+        disabled=not st.session_state.get("confirm_wipe", False),
+        on_click=_do_wipe_all,
+    )
+
+
+def _render_comparison(first: dict, second: dict) -> None:
+    st.subheader("Comparison")
+    earlier, later = (
+        (first, second)
+        if (first["created_at"], first["id"]) <= (second["created_at"], second["id"])
+        else (second, first)
+    )
+    try:
+        result = store.compare_attempts(earlier, later)
+    except store.StoreError as exc:
+        st.error(f"Could not compare ({exc}).")
+        return
+    st.write(
+        f"Earlier: {result['earlier']['created_at'].replace('T', ' ')[:16]} · "
+        f"{result['earlier']['coverage_pct']:.1f}% · "
+        f"{result['earlier']['input_mode']} · "
+        f"{'assisted' if result['earlier']['assisted'] else 'unassisted'}"
+    )
+    st.write(
+        f"Later: {result['later']['created_at'].replace('T', ' ')[:16]} · "
+        f"{result['later']['coverage_pct']:.1f}% · "
+        f"{result['later']['input_mode']} · "
+        f"{'assisted' if result['later']['assisted'] else 'unassisted'}"
+    )
+    if not result["comparable"]:
+        st.warning(result["reason"])
+        return
+    delta = result["coverage_delta_pp"]
+    st.header(f"{delta:+.1f} percentage points")
+    st.write(
+        "Percentage points, not percent improvement — and a higher value "
+        "does not prove improved correctness or speaking ability."
+    )
+    if result["newly_covered"]:
+        st.subheader("Newly covered")
+        for item in result["newly_covered"]:
+            st.write(f"+ {item['label']}")
+    if result["regressed"]:
+        st.subheader("No longer detected / needs review")
+        for item in result["regressed"]:
+            st.write(f"− {item['label']} (now: {item['later_status']})")
+    if not result["newly_covered"] and not result["regressed"]:
+        st.write("No per-concept changes between these attempts.")
+    st.caption("Reviewed answers under inspection:")
+    st.text(f"Earlier: {earlier['reviewed_text']}")
+    st.text(f"Later: {later['reviewed_text']}")
 
 
 def _render_feedback(vm: dict) -> None:
@@ -148,6 +329,17 @@ def main() -> None:
     vm = _state()
     if vm["question_id"] is None:
         flow.select_question(vm, bank[0]["id"])
+
+    nav = st.sidebar.radio("Navigate", ["Practice", "History"], key="nav")
+    if nav == "History":
+        # History is read-only: persist on-screen text into session state
+        # first so the round trip can never wipe a draft or review edit.
+        if "draft_input" in st.session_state:
+            flow.update_draft(vm, st.session_state.draft_input)
+        if "review_input" in st.session_state:
+            flow.update_reviewed(vm, st.session_state.review_input)
+        _render_history(bank)
+        return
 
     labels = [f"{q['topic']} — {q['difficulty']}" for q in bank]
     ids = [q["id"] for q in bank]
@@ -293,6 +485,8 @@ def main() -> None:
             )
         st.write("This exact text will be evaluated. Edit it first if needed:")
         st.text(vm["reviewed"])
+        if "review_input" not in st.session_state:
+            st.session_state.review_input = vm["reviewed"]
         st.text_area("Edit your answer", height=180, key="review_input")
         left, right = st.columns(2)
         if left.button("Evaluate reviewed answer", key="evaluate_btn"):
@@ -316,14 +510,48 @@ def main() -> None:
             return
         st.subheader("Feedback")
         _render_feedback(vm)
-        with st.expander("Reference answer (reveals the rubric wording)"):
+
+        if vm.get("saved"):
+            st.success(
+                f"Saved attempt {vm['saved'][:8]}… — stored locally on this "
+                "computer only. Saving again will not duplicate it."
+            )
+        elif st.button("Save attempt", key="save_btn"):
+            try:
+                inserted, stored = flow.save_current(vm, question, _db_path())
+            except store.StoreError as exc:
+                # The reviewed answer is untouched: nothing is lost.
+                vm["error"] = (
+                    f"Could not save this attempt ({exc}). Your reviewed "
+                    "answer is kept — you can retry saving."
+                )
+            else:
+                vm["error"] = ""
+                vm["saved"] = stored["id"]
+                st.rerun()
+
+        if vm.get("show_reference"):
+            st.subheader("Reference answer")
             st.write(question["reference_answer"])
             st.write(
-                "Reading this makes further practice on this question "
-                "**assisted**: it is still useful for learning, but do not "
-                "present a later attempt as an unseen assessment."
+                "The reference was revealed, so further practice on this "
+                "question is **assisted** for the rest of this session "
+                "(pressing Try again does not reset that). Cross-session "
+                "assistance cannot be established — a fresh session always "
+                "starts unassisted."
             )
             st.write(f"Follow-up to try next: {question['follow_up']}")
+        elif st.button("Reveal reference answer", key="reveal_btn"):
+            flow.reveal_reference(vm)
+            st.rerun()
+        else:
+            st.caption(
+                "Reading the reference makes further practice assisted. "
+                "Reveal it explicitly — opening nothing by accident."
+            )
+
+        if vm["error"]:
+            st.warning(vm["error"])
         left, right = st.columns(2)
         if left.button("Edit answer", key="edit_btn"):
             flow.edit_after_evaluation(vm)
