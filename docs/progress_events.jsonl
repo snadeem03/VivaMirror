@@ -1,0 +1,18 @@
+{"estimated_remaining_minutes":295,"event":"sprint_planned","note":"Sprint 1 (accelerated student development sprint) planned; committed scope 295 min; stretch tracked separately; target ~5h estimate","story_id":"SPRINT-1","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":60,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-10","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":60,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-06","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":25,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-02","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":20,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-05","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":20,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-01","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":35,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-08","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":30,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-07","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":40,"event":"estimated","note":"Initial estimate at sprint planning","story_id":"US-09","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":5,"event":"estimated","note":"Incremental code portion; bulk of US-11 satisfied by M0 docs","story_id":"US-11","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":30,"event":"estimated","note":"Stretch: timeboxed spike, not committed","story_id":"US-03","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":0,"event":"estimated","note":"Stretch: adapter stub covered inside US-03 spike timebox","story_id":"US-04","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":40,"event":"estimated","note":"Stretch: partly folded into US-06/US-08 implementation","story_id":"US-12","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":25,"event":"estimated","note":"Stretch remainder: planning portion completes in M0","story_id":"US-14","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":30,"event":"estimated","note":"Stretch: implemented in later CI milestone","story_id":"US-13","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":15,"event":"estimated","note":"Stretch P2","story_id":"US-15","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":20,"event":"estimated","note":"Stretch P2","story_id":"US-16","timestamp":"2026-10-09T00:15:28+05:30"}
+{"estimated_remaining_minutes":295,"event":"planning_completed","note":"Milestone 0 planning artifacts complete (M0); no implementation started; no historical progress invented","story_id":"US-14","timestamp":"2026-10-09T00:15:28+05:30"}

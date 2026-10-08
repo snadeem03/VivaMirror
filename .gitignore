@@ -1,0 +1,77 @@
+# VivaMirror .gitignore (Milestone 0)
+# Keep sample rubrics and project-management data tracked.
+# Ignore local/generated/runtime artifacts only.
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Python caches / build
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Streamlit / local runtime
+.streamlit/secrets.toml
+.streamlit/config.local.toml
+
+# Secrets / credentials (never commit)
+.env
+.env.*
+*.pem
+*.key
+secrets/
+credentials.json
+
+# Local audio uploads / recordings (raw audio must not be retained by default)
+# Tracked sample audio (if any) must live under assets/samples/ explicitly force-added.
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.flac
+audio/
+uploads/
+recordings/
+tmp_audio/
+
+# Generated databases / local app state (SQLite attempt history is local runtime data)
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+data/app.db
+data/*.db
+data/local/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs / temp
+*.log
+temp/
+tmp/
+
+# IMPORTANT: do NOT ignore these (kept tracked):
+#   docs/                  (Agile tracking: backlog, kanban, burndown inputs, events)
+#   data/rubrics/          (curated sample rubrics)
+#   assets/samples/        (tiny committed demo fixtures, if any)
+#   .github/workflows/     (CI/CD workflows from later milestone)
+!docs/
+!docs/**/*
+!data/rubrics/
+!data/rubrics/**/*
