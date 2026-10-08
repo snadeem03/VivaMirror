@@ -39,24 +39,21 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | US-09 — Streamlit end-to-end flow | Done Milestone 5: full loop reachable, no login; issue #9 closed |
 | US-11 — Guardrails in code | Done Milestone 5: no-audio-retention verified, statements present, no login/tracking/paid API; issue #11 closed |
 | US-13 — GitHub Actions CI + archive | Done Milestone 6: CI green win+linux, v0.1.0 delivered + verified; issue #13 closed |
+| US-17 — Hourly burndown | Done Milestone 6: reproducible chart + H0/H1/H2 checkpoints; issue #17 closed |
+| US-12 — Meaningful tests, CI-safe | Done Milestone 6: 158 tests verified per-file + ruff green in CI; issue #12 closed |
+| US-14 — Agile tracking remainder | Done Milestone 6: artifacts consistent, board/issues verified, CI evidence linked; issue #14 closed |
 
 ### Review (waiting / under review — not done)
 
-| Card | Note |
-|------|------|
-| US-14 — Tracking remainder | Waiting on sprint-end evidence (CI runs, final burndown); board/issues verified; stays open, see issue #14 |
+*(empty — all required work is Done; P2s US-15/US-16 remain deferred in Backlog)*
 
 ### In Progress (max 1)
 
-| Card | Note |
-|------|------|
-| US-17 — Hourly burndown | Started Milestone 6 (~02:42 IST); chart generator + H2 checkpoint |
+*(empty — Sprint 1 committed scope complete)*
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 
-| Card | Estimate |
-|------|----------|
-| US-12 — Meaningful tests, CI-safe (bank+evaluator+flow+UI+store+history subtasks done, story open) | 40 min |
+*(empty — all committed stories Done; only deferred P2s remain below)*
 
 ### Backlog (deferred post-MVP)
 

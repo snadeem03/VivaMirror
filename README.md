@@ -1,5 +1,7 @@
 # VivaMirror — A Practice Viva That Shows What You Missed
 
+[![ci](https://github.com/snadeem03/VivaMirror/actions/workflows/ci.yml/badge.svg)](https://github.com/snadeem03/VivaMirror/actions/workflows/ci.yml)
+
 > **Milestone 3 status: typed-answer practice flow works.**
 > Implemented so far: curated 15-question bank + validation (US-10), CAP
 > rubric clarification, evidence-based evaluator (US-06), and the Streamlit
@@ -24,6 +26,16 @@ py -3.11 -m venv .venv
 - The app opens in the browser automatically; stop it with `Ctrl+C`.
 - No login, API keys, or model downloads anywhere except the documented
   first-run speech-model download (§11).
+
+## 0b. Prototype release (verified delivery, not hosting)
+
+- Release: https://github.com/snadeem03/VivaMirror/releases/tag/v0.1.0
+  (`vivamirror-v0.1.0.zip`, 38 tracked files, validated contents).
+- Use it: download + unzip the asset, then install and launch per §0
+  (Python 3.11 required; add `requirements-audio.txt` for speech).
+- Released commit: `fbc22b4`. Later commits add only workflow-cosmetic
+  edits, the burndown chart, and submission evidence — disclosed here, not
+  implied identical. Full evidence: `docs/submission_evidence.md`.
 
 ## 1. Problem
 
