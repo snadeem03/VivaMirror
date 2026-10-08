@@ -998,32 +998,32 @@
     "follow_up": "A partition splits your cluster into a majority and a minority side. If you must keep serving writes everywhere, what do readers risk, and how do you reconcile afterwards?",
     "id": "ds-15",
     "question_text": "State the CAP theorem precisely and explain what it forces designers to choose during a network partition.",
-    "reference_answer": "CAP says a distributed data system cannot guarantee linearizable consistency and total availability at the same time while a network partition lasts — partition tolerance is mandatory, so the real choice during a partition is between consistency (CP: refuse or block some requests, e.g. minority-side writes) and availability (AP: answer everything, possibly stale, and reconcile later). With no partition, all three are achievable together, so 'always pick any two' is a misleading slogan.",
+    "reference_answer": "In the CAP context, consistency means linearizability — every read sees the latest completed write — and availability means every request to a non-failing node receives a non-error response, even if the data is not the latest. The theorem says that during a network partition no distributed data system can guarantee both at once. A partitioned design therefore either limits some requests to stay consistent (CP — and CP designs differ: blocking, failing minority-side writes, or serving majority-side reads) or keeps answering from reachable nodes (AP — answers may, but need not, be stale, with reconciliation later). Real networks can split, so partition behavior must be chosen deliberately; with no partition, consistency and availability coexist, which is why 'always pick any two' misstates the theorem.",
     "subject": "Distributed Systems",
     "topic": "CAP theorem",
     "concepts": [
       {
         "accepted_phrases": [
-          "partitions cannot be avoided",
           "network splits will eventually happen",
-          "partition tolerance is mandatory"
+          "systems must handle network partitions",
+          "design must define partition behavior"
         ],
-        "explanation": "Real networks partition, so tolerating partitions is a requirement, not an option.",
+        "explanation": "Real networks can split, so a distributed design must define how it behaves under partition instead of assuming partitions never occur.",
         "id": "ds-15-c1",
-        "label": "Partitions are unavoidable",
+        "label": "Partitions cannot be designed away",
         "negative_examples": [
           "Network partitions can be prevented entirely.",
-          "Partition tolerance is an optional luxury."
+          "A design can simply ignore partitions."
         ],
         "weight": 30
       },
       {
         "accepted_phrases": [
           "choose between consistency and availability",
-          "block requests or serve stale data",
+          "refuse requests or answer from one side",
           "trade-off applies during a partition"
         ],
-        "explanation": "While partitioned, the system must sacrifice guaranteed consistency or guaranteed availability — one of the two gives.",
+        "explanation": "Consistency here means linearizability and availability means non-error responses from working nodes; a partition makes guaranteeing both at once impossible.",
         "id": "ds-15-c2",
         "label": "C/A trade-off during partitions",
         "negative_examples": [
@@ -1035,15 +1035,15 @@
       {
         "accepted_phrases": [
           "refuse minority-side writes",
-          "answer every request possibly stale",
+          "CP designs may block or fail requests",
           "reconcile divergent replicas afterwards"
         ],
-        "explanation": "CP designs fail or block some requests to stay consistent; AP designs stay responsive and merge differences later.",
+        "explanation": "CP designs stay consistent by refusing, blocking, or limiting some requests — and CP designs differ from one another; AP designs keep answering from reachable nodes, which may (but need not) return stale data, reconciling afterwards.",
         "id": "ds-15-c3",
         "label": "CP versus AP behaviour",
         "negative_examples": [
           "CP systems accept all writes on every side.",
-          "AP systems never need any reconciliation."
+          "AP systems always return stale data."
         ],
         "weight": 20
       },
