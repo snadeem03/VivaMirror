@@ -37,7 +37,9 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 
 ### In Progress (max 1)
 
-*(empty — US-06 completed; next story starts in the next milestone)*
+| Card | Note |
+|------|------|
+| US-01 — Question select | Started Milestone 3 (~01:09 IST); state helper + selector slice |
 
 ### Ready (committed sprint scope — pull one at a time, in this order)
 

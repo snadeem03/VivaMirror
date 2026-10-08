@@ -1,1 +1,4 @@
-pytest
+# VivaMirror runtime dependencies (needed to run the practice app).
+# Tested with the versions below on Python 3.11 (Windows); this is not a
+# lockfile — no hashes or transitive pins are claimed.
+streamlit==1.65.0

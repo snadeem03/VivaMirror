@@ -1,0 +1,3 @@
+# VivaMirror development dependencies (tests, local checks).
+-r requirements.txt
+pytest==9.1.1
