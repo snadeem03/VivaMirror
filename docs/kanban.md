@@ -32,14 +32,15 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | US-01 — Question select | Done Milestone 3: 15 listed, stable IDs, reset-on-change; issue #1 closed |
 | US-02 — Typed-answer mode | Done Milestone 3: labeled typed path, no audio APIs; issue #2 closed |
 | US-05 — Review/edit before evaluation | Done Milestone 3: separate actions, blank rejection, edit invalidates; issue #5 closed |
+| US-04 — Transcription adapter | Done Milestone 4: adapter + UI routing verified, real base.en check passed; issue #4 closed |
+| US-03 — Record/upload audio | Done Milestone 4: mic + upload + transcribe→review→evaluate, session-only audio, typed independent; issue #3 closed |
 
 ### Review (waiting / under review — not done)
 
 | Card | Note |
 |------|------|
 | US-14 — Tracking remainder | Waiting on sprint-end evidence (CI runs, final burndown); board/issues verified; stays open, see issue #14 |
-| US-09 — Streamlit flow (partial) | Waiting: typed flow done; spoken integration (US-03/US-04) + retry/compare (US-07/US-08) pending; not Done |
-| US-04 — Transcription adapter | In Review: adapter + 14 tests green, real base.en check passed; UI routing pending US-03 |
+| US-09 — Streamlit flow (partial) | Waiting: typed + spoken flow done; only retry/compare (US-07/US-08) pending; not Done |
 
 ### In Progress (max 1)
 
@@ -50,7 +51,6 @@ verified field values). Issues: https://github.com/snadeem03/VivaMirror/issues
 | Card | Estimate |
 |------|----------|
 | US-12 — Meaningful tests, CI-safe (bank+evaluator+flow+UI subtasks done, story open) | 40 min |
-| US-03 — Record/upload audio | 40 min |
 | US-08 — SQLite history + progress | 35 min |
 | US-07 — Retry + compare | 30 min |
 | US-09 — Streamlit flow (trimmed) | 30 min |

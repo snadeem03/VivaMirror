@@ -145,3 +145,83 @@ def test_real_evaluator_integration_reports_coverage(bank):
     assert flow.confirm_evaluation(state, bank["ds-15"]) is True
     assert state["result"]["coverage_pct"] == 65.0
     assert state["result"]["earned_weight"] == 65.0
+
+
+# --- Spoken-mode state (US-03/US-04 slice) ---------------------------------------------
+
+
+def _audio(n=10):
+    return {"data": bytes(range(n)), "mime": "audio/wav", "name": "answer.wav"}
+
+
+def test_select_question_clears_audio_and_source(bank):
+    state = flow.initial_state()
+    flow.select_question(state, "ds-15")
+    flow.switch_mode(state, flow.MODE_SPOKEN)
+    flow.set_audio(state, _audio())
+    flow.submit_transcript(state, "some transcript")
+    assert state["answer_source"] == flow.MODE_SPOKEN
+
+    flow.select_question(state, "ds-08")
+    assert state["audio"] is None
+    assert state["reviewed"] == ""
+    assert state["answer_source"] == ""
+    assert state["result"] is None
+    assert state["mode"] == flow.MODE_SPOKEN  # input preference is kept
+
+
+def test_switch_mode_preserves_inputs_but_clears_result(bank):
+    state = flow.initial_state()
+    flow.select_question(state, "ds-15")
+    flow.update_draft(state, "typed words")
+    flow.switch_mode(state, flow.MODE_SPOKEN)
+    flow.set_audio(state, _audio())
+    flow.submit_transcript(state, "spoken transcript")
+    flow.confirm_evaluation(state, bank["ds-15"])
+    assert flow.can_view_reference(state)
+
+    flow.switch_mode(state, flow.MODE_TYPED)
+    assert state["result"] is None
+    assert state["reviewed"] == ""
+    assert not flow.can_view_reference(state)
+    assert state["draft"] == "typed words"  # typed input not lost
+    assert state["audio"] is not None  # recording not lost either
+    assert state["stage"] == flow.STAGE_ANSWER
+
+
+def test_switch_mode_rejects_unknown_mode():
+    with pytest.raises(flow.FlowError, match="mode"):
+        flow.switch_mode(flow.initial_state(), "telepathy")
+
+
+def test_set_audio_requires_real_bytes():
+    state = flow.initial_state()
+    with pytest.raises(flow.FlowError):
+        flow.set_audio(state, {"data": b"", "mime": "", "name": ""})
+    with pytest.raises(flow.FlowError):
+        flow.set_audio(state, "nope")
+    assert flow.set_audio(state, None)["audio"] is None
+
+
+def test_submit_transcript_enters_review_without_evaluating(bank):
+    state = flow.initial_state()
+    flow.select_question(state, "ds-10")
+    flow.switch_mode(state, flow.MODE_SPOKEN)
+    assert flow.submit_transcript(state, "   ") is False
+    assert state["stage"] == flow.STAGE_ANSWER
+    assert "empty" in state["error"].lower()
+
+    assert flow.submit_transcript(state, "spoken words here") is True
+    assert state["stage"] == flow.STAGE_REVIEW
+    assert state["answer_source"] == flow.MODE_SPOKEN
+    assert state["result"] is None  # transcription never auto-evaluates
+
+
+def test_retry_clears_audio(bank):
+    state = flow.initial_state()
+    flow.select_question(state, "ds-15")
+    flow.switch_mode(state, flow.MODE_SPOKEN)
+    flow.set_audio(state, _audio())
+    flow.retry_question(state)
+    assert state["audio"] is None
+    assert state["answer_source"] == ""

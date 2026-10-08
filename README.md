@@ -18,9 +18,12 @@ py -3.11 -m venv .venv
 
 - Runtime: `requirements.txt` (`streamlit==1.65.0`, tested — not a lockfile).
 - Development (tests): `requirements-dev.txt` (adds `pytest==9.1.1`).
+- Spoken answers (optional): `.\.venv\Scripts\python.exe -m pip install -r requirements-audio.txt`
+  (`faster-whisper==1.2.1`, `av==18.1.0`, CPU-only wheels). Typed practice
+  launches and runs fully without it — see §11.
 - The app opens in the browser automatically; stop it with `Ctrl+C`.
-- Audio answers are **not available yet**: the UI is explicitly labeled
-  "Typed practice mode". No login, API keys, or model downloads anywhere.
+- No login, API keys, or model downloads anywhere except the documented
+  first-run speech-model download (§11).
 
 ## 1. Problem
 
@@ -56,14 +59,17 @@ missed → retry and compare.
 
 ## 4. MVP scope (tonight, ~5-hour accelerated student sprint)
 
-Included (status as of Milestone 3):
+Included (status as of Milestone 4):
 
-- Streamlit interface, Python 3.11. ✅ working (typed flow).
+- Streamlit interface, Python 3.11. ✅ working (typed + spoken flow).
 - Distributed Systems only, 15 curated questions + rubrics
   (concepts, weights, accepted phrases, reference answers, follow-ups). ✅
-- Microphone recording / audio upload where the browser/OS supports it. ⏳ US-03.
-- Replaceable transcription adapter (default: free/local, no paid API). ⏳ US-04.
+- Microphone recording / audio upload where the browser/OS supports it. ✅
+  (upload verified by tests; mic widget rendered — browser check outstanding)
+- Replaceable transcription adapter (default: free/local, no paid API). ✅
+  (faster-whisper CPU/int8 base.en; real local check passed)
 - Typed-answer mode, usable even when transcription is unavailable. ✅
+  (verified with speech stack forcibly absent)
 - Editable transcript before evaluation. ✅ (review/edit screens, blank rejection)
 - Transparent concept-coverage feedback with matched evidence spans. ✅
 - Negation-safe matching: negated phrases (e.g. "not consistent",
@@ -170,4 +176,38 @@ git -C "D:\-_-\VivaMirror" log --oneline -8
 
 Expected: full suite green, app serving the typed flow (health:
 `/_stcore/health` → `ok`), clean tree, commits `eeaf712` (flow helper)
-and slice-2 feedback commit below.
+and `510d3c2` (feedback UI).
+
+## 11. Spoken answers (US-03/US-04, Milestone 4)
+
+- **Install:** core app needs only `requirements.txt`. For speech, add
+  `.\.venv\Scripts\python.exe -m pip install -r requirements-audio.txt`.
+  Without it, typed practice works fully; the spoken UI explains the missing
+  dependency and every transcription failure routes back to typing.
+- **Backend/model:** faster-whisper on CPU (`int8`), model `base.en`
+  (~150 MB). The model object loads on first transcription only.
+- **First run:** needs internet, ~150 MB disk, and patience (measured
+  14.8 s first load including download on the dev machine; ~2.5 s inference
+  for a 9 s clip). Afterwards the local Hugging Face cache makes it work
+  offline. A failed download raises a clear error — transcription is never
+  silently faked.
+- **Microphone/browser:** the Record widget needs microphone permission and
+  works on localhost/HTTPS. If the browser cannot record, use the upload
+  alternative (same review → evaluate path).
+- **Supported formats and limits:** wav, mp3, m4a, ogg/oga, flac, webm;
+  max **20 MB** and **3 minutes**, checked before expensive inference.
+  Corrupt/unsupported files are rejected safely with a helpful message.
+- **Privacy/session behavior:** audio stays in the browser session for
+  playback until replaced, the question changes, or the page closes. It is
+  never uploaded anywhere and never saved by the app; transcription stages
+  it through a short-lived temp file deleted immediately after (success and
+  error paths). Raw audio is git-ignored and never committed.
+- **What transcription is not:** the adapter returns transcript, language,
+  duration, and backend/model metadata only — no confidence values, no
+  speaking scores. Transcription accuracy and concept coverage are shown as
+  separate things, and the transcript must be reviewed/edited before it can
+  be evaluated.
+- **Honest verification status:** real local transcription verified with a
+  synthetic Windows-TTS WAV (exact transcript, `en`, 8.92 s duration).
+  Microphone recording itself needs a browser with mic permission — a manual
+  check still outstanding (see demo plan).

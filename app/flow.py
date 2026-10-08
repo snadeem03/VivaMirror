@@ -15,6 +15,10 @@ STAGE_ANSWER = "answer"
 STAGE_REVIEW = "review"
 STAGE_EVALUATED = "evaluated"
 
+MODE_TYPED = "typed"
+MODE_SPOKEN = "spoken"
+MODES = (MODE_TYPED, MODE_SPOKEN)
+
 BLANK_MESSAGE = (
     "Write something first — a blank answer cannot be evaluated. "
     "Anything you already typed is kept, so just add your explanation "
@@ -30,8 +34,11 @@ def initial_state() -> dict:
     """Fresh flow state: no question selected, empty draft."""
     return {
         "question_id": None,
+        "mode": MODE_TYPED,
         "draft": "",
+        "audio": None,  # {"data": bytes, "mime": str, "name": str} | None
         "reviewed": "",
+        "answer_source": "",  # "typed" | "spoken" | ""
         "result": None,
         "stage": STAGE_ANSWER,
         "error": "",
@@ -47,7 +54,9 @@ def select_question(state: dict, question_id: str) -> dict:
         raise FlowError("question_id must be a nonempty string")
     state["question_id"] = question_id
     state["draft"] = ""
+    state["audio"] = None
     state["reviewed"] = ""
+    state["answer_source"] = ""
     state["result"] = None
     state["stage"] = STAGE_ANSWER
     state["error"] = ""
@@ -66,6 +75,7 @@ def submit_for_review(state: dict) -> bool:
         state["error"] = BLANK_MESSAGE
         return False
     state["reviewed"] = state["draft"]
+    state["answer_source"] = MODE_TYPED
     state["stage"] = STAGE_REVIEW
     state["error"] = ""
     return True
@@ -112,11 +122,65 @@ def edit_after_evaluation(state: dict) -> dict:
 def retry_question(state: dict) -> dict:
     """Start over on the same question (same-session practice, no history)."""
     state["draft"] = ""
+    state["audio"] = None
     state["reviewed"] = ""
+    state["answer_source"] = ""
     state["result"] = None
     state["stage"] = STAGE_ANSWER
     state["error"] = ""
     return state
+
+
+def switch_mode(state: dict, mode: str) -> dict:
+    """Switch typed/spoken input; clears result, keeps each mode's input."""
+    if mode not in MODES:
+        raise FlowError(f"mode must be one of {list(MODES)}, got {mode!r}")
+    state["mode"] = mode
+    state["reviewed"] = ""
+    state["answer_source"] = ""
+    state["result"] = None
+    state["stage"] = STAGE_ANSWER
+    state["error"] = ""
+    return state
+
+
+def set_audio(state: dict, audio: dict | None) -> dict:
+    """Store recorded/uploaded audio; new audio invalidates transcript/result."""
+    if audio is not None:
+        if (
+            not isinstance(audio, dict)
+            or not isinstance(audio.get("data"), (bytes, bytearray))
+            or not audio["data"]
+        ):
+            raise FlowError("audio must be {'data': nonempty bytes, ...} or None")
+    state["audio"] = (
+        {"data": bytes(audio["data"]), "mime": audio.get("mime", ""),
+         "name": audio.get("name", "")}
+        if audio is not None
+        else None
+    )
+    state["reviewed"] = ""
+    state["answer_source"] = ""
+    state["result"] = None
+    state["stage"] = STAGE_ANSWER
+    state["error"] = ""
+    return state
+
+
+def submit_transcript(state: dict, transcript: str) -> bool:
+    """Move a fresh transcript -> review. Blank transcripts are rejected."""
+    if not isinstance(transcript, str) or not transcript.strip():
+        state["error"] = (
+            "The transcription came back empty (silence or unintelligible "
+            "audio). Re-record closer to the microphone, or type the answer "
+            "instead — your audio is kept for another try."
+        )
+        return False
+    state["reviewed"] = transcript
+    state["answer_source"] = MODE_SPOKEN
+    state["stage"] = STAGE_REVIEW
+    state["error"] = ""
+    return True
 
 
 def can_view_reference(state: dict) -> bool:
